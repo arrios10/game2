@@ -23,6 +23,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     let gap: CGFloat = 0
     
+    var lastWord = ""
+
+    
     
     //falling box
     private weak var wordTimer: Timer?
@@ -31,8 +34,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var stopEverything = false
     
     private weak var removeItemsTimer: Timer?
+                        
     
-    let wordList = ["To", "Thine", "Own", "Self", "Be","True"]
+    let wordList = ["The", "Only", "Way", "Out", "Is","Through"]
+    
+    let colorPalette: [UIColor] = [.systemBlue, .cyan, .green, .yellow, .orange, .red]
+
     
     var totalBoxes: Int {
         return wordList.count
@@ -46,7 +53,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         physicsWorld.contactDelegate = self
         
-        let boxWidth: CGFloat = (self.frame.width * 0.8) / CGFloat(totalBoxes)
+        let boxWidth: CGFloat = ((self.frame.width * 0.8) + 10) / (CGFloat(totalBoxes))
         view.preferredFramesPerSecond = 120 // Set preferred FPS to 60
         physicsWorld.gravity = CGVector(dx: 0, dy: -3.71)
         
@@ -78,18 +85,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             box.physicsBody?.affectedByGravity = false
             box.physicsBody?.isDynamic = false
             
-            if i % 2 == 0 {
-                box.fillColor = .lightGray
-                box.physicsBody?.categoryBitMask = CollisionType.grayBox.rawValue
-                box.physicsBody?.collisionBitMask = CollisionType.grayFallingBox.rawValue
-                box.physicsBody?.contactTestBitMask = CollisionType.grayFallingBox.rawValue
-                
-            } else {
-                box.fillColor = .white
+
+            box.strokeColor = .white
+            box.lineWidth = 5
                 box.physicsBody?.categoryBitMask = CollisionType.whiteBox.rawValue
                 box.physicsBody?.collisionBitMask = CollisionType.whiteFallingBox.rawValue
                 box.physicsBody?.contactTestBitMask = CollisionType.whiteFallingBox.rawValue
-            }
+            
             
             box.name = wordList[i]
             
@@ -118,7 +120,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         case CollisionType.whiteBox.rawValue | CollisionType.whiteFallingBox.rawValue:
             print("White box and white falling box collided")
             
-            if let whiteBox = contact.bodyA.node {
+            if let whiteBox = contact.bodyA.node as? SKShapeNode {
                 // use whiteBox
                 if let whiteFallingBox = contact.bodyB.node {
                     // use whiteFallingBox
@@ -128,8 +130,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         label.fontColor = .black
                         label.fontSize = 25
                         label.fontName = "Helvetica Neue Bold"
-                        label.position.y = -10
+                        label.position.y = 42
                         whiteBox.addChild(label)
+                        let moveAction = SKAction.moveTo(y: -10, duration: 0.21)
+                        //let sequence = SKAction.sequence([fadeOutAction, fadeInAction])
+                        label.run(moveAction)
+
+                        whiteBox.fillColor = UIColor.white
                         whiteFallingBox.removeFromParent()
                     } else{
                         if let explosion = SKEmitterNode(fileNamed: "Explosion") {
@@ -161,7 +168,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         print(grayBox.name!)
                         let label = SKLabelNode(text: grayBox.name)
                         label.fontColor = .black
-                        label.fontSize = 25
+                        label.fontSize = 23
                         label.fontName = "Helvetica Neue Bold"
                         label.position.y = -10
                         grayBox.addChild(label)
@@ -182,15 +189,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     
     @objc func createWordStream() {
-        let size = CGSize(width: (self.frame.width * 0.8) / CGFloat(totalBoxes), height: 100)
+        
+        let size = CGSize(width: ((self.frame.width * 0.8) + 10) / (CGFloat(totalBoxes)), height: 100)
         
         let fallingBox = SKShapeNode(rectOf: size)
         let randomIndex = arc4random_uniform(UInt32(wordList.count))
         addChild(fallingBox)
         
+        let word = wordList[Int(randomIndex)]
+    
+        
         let label = SKLabelNode(text: wordList[Int(randomIndex)])
         label.fontColor = .white
-        label.fontSize = 25
+        label.fontSize = 23
         label.fontName = "Helvetica Neue Bold"
         label.position = CGPoint(x: fallingBox.position.x, y: -10)
         
@@ -206,19 +217,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         fallingBox.physicsBody = SKPhysicsBody(rectangleOf: boxSize)
         fallingBox.physicsBody?.linearDamping = 0.5
         
-        // Then, you can set these properties
-        if randomIndex % 2 == 0 {
-            fallingBox.fillColor = .lightGray
-            fallingBox.physicsBody?.categoryBitMask = CollisionType.grayFallingBox.rawValue
-            fallingBox.physicsBody?.collisionBitMask = CollisionType.grayBox.rawValue | CollisionType.grayFallingBox.rawValue | CollisionType.whiteFallingBox.rawValue
-            fallingBox.physicsBody?.contactTestBitMask = CollisionType.grayBox.rawValue | CollisionType.grayFallingBox.rawValue | CollisionType.whiteFallingBox.rawValue
-        } else {
-            fallingBox.strokeColor = .white
+
+            fallingBox.strokeColor = .systemYellow
+            fallingBox.lineWidth = 3
             fallingBox.physicsBody?.categoryBitMask = CollisionType.whiteFallingBox.rawValue
             fallingBox.physicsBody?.collisionBitMask = CollisionType.whiteBox.rawValue | CollisionType.whiteFallingBox.rawValue | CollisionType.grayFallingBox.rawValue
             fallingBox.physicsBody?.contactTestBitMask = CollisionType.whiteBox.rawValue | CollisionType.whiteFallingBox.rawValue | CollisionType.grayFallingBox.rawValue
-        }
         
+    
         var fruitsCopy = wordList
         
         if fruitsCopy.count == 0 {
