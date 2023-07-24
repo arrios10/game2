@@ -131,6 +131,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         label.position.y = -10
                         whiteBox.addChild(label)
                         whiteFallingBox.removeFromParent()
+                    } else{
+                        if let explosion = SKEmitterNode(fileNamed: "Explosion") {
+                            explosion.position = whiteFallingBox.position
+                            addChild(explosion)
+                        }
+                        whiteFallingBox.removeFromParent()
                     }
                 }
 
@@ -147,6 +153,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 
                 if let grayFallingBox = contact.bodyB.node {
                     // use grayFallingBox
+                    
+                    if grayFallingBox.position.y > self.frame.maxY {
+                        print("above barrier")
+                    }
                     if grayBox.name == grayFallingBox.name {
                         print(grayBox.name!)
                         let label = SKLabelNode(text: grayBox.name)
@@ -174,19 +184,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     @objc func createWordStream() {
         let size = CGSize(width: (self.frame.width * 0.8) / CGFloat(totalBoxes), height: 100)
         
-        let fallingBox = SKSpriteNode(color: .white, size: size)
+        let fallingBox = SKShapeNode(rectOf: size)
         let randomIndex = arc4random_uniform(UInt32(wordList.count))
         addChild(fallingBox)
         
         let label = SKLabelNode(text: wordList[Int(randomIndex)])
-        label.fontColor = .black
+        label.fontColor = .white
         label.fontSize = 25
         label.fontName = "Helvetica Neue Bold"
         label.position = CGPoint(x: fallingBox.position.x, y: -10)
         
         fallingBox.addChild(label)
         
-        fallingBox.position.y = 600
+        fallingBox.position.y = self.frame.maxY + 100
         fallingBox.name = wordList[Int(randomIndex)]
         
         let boxSize = CGSize(width: label.frame.width , height: fallingBox.frame.height)
@@ -198,15 +208,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         // Then, you can set these properties
         if randomIndex % 2 == 0 {
-            fallingBox.color = .lightGray
+            fallingBox.fillColor = .lightGray
             fallingBox.physicsBody?.categoryBitMask = CollisionType.grayFallingBox.rawValue
-            fallingBox.physicsBody?.collisionBitMask = CollisionType.grayBox.rawValue | CollisionType.grayFallingBox.rawValue
-            fallingBox.physicsBody?.contactTestBitMask = CollisionType.grayBox.rawValue | CollisionType.grayFallingBox.rawValue
+            fallingBox.physicsBody?.collisionBitMask = CollisionType.grayBox.rawValue | CollisionType.grayFallingBox.rawValue | CollisionType.whiteFallingBox.rawValue
+            fallingBox.physicsBody?.contactTestBitMask = CollisionType.grayBox.rawValue | CollisionType.grayFallingBox.rawValue | CollisionType.whiteFallingBox.rawValue
         } else {
-            fallingBox.color = .white
+            fallingBox.strokeColor = .white
             fallingBox.physicsBody?.categoryBitMask = CollisionType.whiteFallingBox.rawValue
-            fallingBox.physicsBody?.collisionBitMask = CollisionType.whiteBox.rawValue | CollisionType.whiteFallingBox.rawValue
-            fallingBox.physicsBody?.contactTestBitMask = CollisionType.whiteBox.rawValue | CollisionType.whiteFallingBox.rawValue
+            fallingBox.physicsBody?.collisionBitMask = CollisionType.whiteBox.rawValue | CollisionType.whiteFallingBox.rawValue | CollisionType.grayFallingBox.rawValue
+            fallingBox.physicsBody?.contactTestBitMask = CollisionType.whiteBox.rawValue | CollisionType.whiteFallingBox.rawValue | CollisionType.grayFallingBox.rawValue
         }
         
         var fruitsCopy = wordList
