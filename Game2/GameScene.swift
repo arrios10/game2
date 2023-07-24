@@ -7,181 +7,272 @@
 
 import SpriteKit
 
-class GameScene: SKScene {
+
+enum CollisionType: UInt32 {
+    case whiteBox = 1
+    case grayBox = 2
+    case whiteFallingBox = 4
+    case grayFallingBox = 8
+}
+
+class GameScene: SKScene, SKPhysicsContactDelegate {
     
     private var boxParent = SKSpriteNode()
-
-    //var boxNodes = [SKShapeNode]() // This array will store references to all box nodes.
-    var previousTouchPoint: CGPoint? // This will store the previous touch point.
     
     // Generate the boxes.
-      let boxWidth: CGFloat = 150
-      let gap: CGFloat = 13
+    
+    let gap: CGFloat = 0
     
     
     //falling box
     private weak var wordTimer: Timer?
-
-
+    
+    
     var stopEverything = false
     
     private weak var removeItemsTimer: Timer?
-
+    
     let wordList = ["To", "Thine", "Own", "Self", "Be","True"]
     
     var totalBoxes: Int {
-            return wordList.count
-        }
+        return wordList.count
+    }
     
-
+    
+    
     override func didMove(to view: SKView) {
-            // Set up the parent node.
-            self.addChild(boxParent)
-        view.preferredFramesPerSecond = 120 // Set preferred FPS to 60
-
+        // Set up the parent node.
+        self.addChild(boxParent)
         
-        print(Double(totalBoxes)/4)
+        physicsWorld.contactDelegate = self
+        
+        let boxWidth: CGFloat = (self.frame.width * 0.8) / CGFloat(totalBoxes)
+        view.preferredFramesPerSecond = 120 // Set preferred FPS to 60
+        physicsWorld.gravity = CGVector(dx: 0, dy: -3.71)
+        
+        
+        
+        for i in 0..<totalBoxes {
+            let box = SKShapeNode(rectOf: CGSize(width: boxWidth, height: 100))
+            
+            
+            box.lineWidth = 0
+            
+            box.position.x = CGFloat(i) * (boxWidth) - ((CGFloat(totalBoxes) * boxWidth + CGFloat(totalBoxes - 1)) / 2) + (boxWidth / 2)
+            
+            boxParent.addChild(box)
+            
+            // Add a label to the box.
+           // let label = SKLabelNode(text: wordList[i])
+            //label.fontColor = .black
+            //label.fontSize = 25
+            //label.fontName = "Helvetica Neue Bold"
+            //label.alpha = 0
+            //label.position = CGPoint(x: box.position.x, y: -10)  // position label relative to boxParent
+            //boxParent.addChild(label)  // add label to boxParent instead of box
+            
+            let size = CGSize(width: box.frame.width / 2 , height: box.frame.height)
 
             
-            for i in 0..<totalBoxes {
-                let box = SKShapeNode(rectOf: CGSize(width: boxWidth, height: 50))
-                if i % 2 == 0 {
-                    box.fillColor = .lightGray
-                    
-                } else {
-                    box.fillColor = .white
-                    
-                }
+            box.physicsBody = SKPhysicsBody(rectangleOf: size)
+            box.physicsBody?.affectedByGravity = false
+            box.physicsBody?.isDynamic = false
+            
+            if i % 2 == 0 {
+                box.fillColor = .lightGray
+                box.physicsBody?.categoryBitMask = CollisionType.grayBox.rawValue
+                box.physicsBody?.collisionBitMask = CollisionType.grayFallingBox.rawValue
+                box.physicsBody?.contactTestBitMask = CollisionType.grayFallingBox.rawValue
                 
-                box.lineWidth = 0
-                
-                box.position.x = CGFloat(i) * (boxWidth + gap) - ((CGFloat(totalBoxes) * boxWidth + CGFloat(totalBoxes - 1) * gap) / 2) + (boxWidth / 2)
-                boxParent.addChild(box)
-                
-                // Add a label to the box.
-                let label = SKLabelNode(text: wordList[i])
-                label.fontColor = .black
-                label.fontSize = 25
-                label.fontName = "Helvetica Neue Bold"
-                //label.alpha = 0
-                label.position = CGPoint(x: box.position.x, y: -10)  // position label relative to boxParent
-                boxParent.addChild(label)  // add label to boxParent instead of box
-                
-                
-
+            } else {
+                box.fillColor = .white
+                box.physicsBody?.categoryBitMask = CollisionType.whiteBox.rawValue
+                box.physicsBody?.collisionBitMask = CollisionType.whiteFallingBox.rawValue
+                box.physicsBody?.contactTestBitMask = CollisionType.whiteFallingBox.rawValue
             }
+            
+            box.name = wordList[i]
+            
+        }
         
         if stopEverything == false {
             wordTimer = Timer.scheduledTimer(timeInterval: TimeInterval(Helper().randomBetweenTwoNumbers(firstNumber: 1.3, secondNumber: 1.5)), target: self, selector: #selector(GameScene.createWordStream), userInfo: nil, repeats: true)
             removeItemsTimer = Timer.scheduledTimer(timeInterval: TimeInterval(0.5), target: self, selector: #selector(GameScene.removeItems), userInfo: nil, repeats: true)
-
-       }
-
-            let totalWidth: CGFloat = CGFloat(totalBoxes) * boxWidth + CGFloat(totalBoxes - 1) * gap
-            boxParent.position = CGPoint(x: self.frame.midX, y: self.frame.minY + 250)
-            boxParent.size.width = totalWidth
-            boxParent.color = .white
+            
         }
+        
+        let totalWidth: CGFloat = CGFloat(totalBoxes) * boxWidth + CGFloat(totalBoxes - 1) * gap
+        boxParent.position = CGPoint(x: self.frame.midX, y: self.frame.minY + 250)
+        boxParent.size.width = totalWidth
+        boxParent.color = .white
+    }
     
+    override func update(_ currentTime: TimeInterval) {
+        
+    }
+    
+    func didBegin(_ contact: SKPhysicsContact) {
+        let mask = contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask
+        
+        switch mask {
+        case CollisionType.whiteBox.rawValue | CollisionType.whiteFallingBox.rawValue:
+            print("White box and white falling box collided")
+            
+            if let whiteBox = contact.bodyA.node {
+                // use whiteBox
+                if let whiteFallingBox = contact.bodyB.node {
+                    // use whiteFallingBox
+                    if whiteBox.name == whiteFallingBox.name {
+                        print(whiteBox.name!)
+                        let label = SKLabelNode(text: whiteBox.name)
+                        label.fontColor = .black
+                        label.fontSize = 25
+                        label.fontName = "Helvetica Neue Bold"
+                        label.position.y = -10
+                        whiteBox.addChild(label)
+                        whiteFallingBox.removeFromParent()
+                    }
+                }
 
+            }
+            
+            
+            
+            // Perform someAction here
+        case CollisionType.grayBox.rawValue | CollisionType.grayFallingBox.rawValue:
+            print("Gray box and gray falling box collided")
+            
+            if let grayBox = contact.bodyA.node {
+                // use grayBox
+                
+                if let grayFallingBox = contact.bodyB.node {
+                    // use grayFallingBox
+                    if grayBox.name == grayFallingBox.name {
+                        print(grayBox.name!)
+                        let label = SKLabelNode(text: grayBox.name)
+                        label.fontColor = .black
+                        label.fontSize = 25
+                        label.fontName = "Helvetica Neue Bold"
+                        label.position.y = -10
+                        grayBox.addChild(label)
+                        grayFallingBox.removeFromParent()
+                    }
+                                        
+                }
+                
+            }
+            
+            
+            // Perform someAction here
+        default:
+            return
+        }
+    }
+    
+    
+    
     @objc func createWordStream() {
-        let size = CGSize(width: 100, height: 50)
-
-        let wordStreamBox = SKSpriteNode(color: .white, size: size)
+        let size = CGSize(width: (self.frame.width * 0.8) / CGFloat(totalBoxes), height: 100)
+        
+        let fallingBox = SKSpriteNode(color: .white, size: size)
         let randomIndex = arc4random_uniform(UInt32(wordList.count))
-        addChild(wordStreamBox)
+        addChild(fallingBox)
         
         let label = SKLabelNode(text: wordList[Int(randomIndex)])
         label.fontColor = .black
         label.fontSize = 25
         label.fontName = "Helvetica Neue Bold"
-        label.position = CGPoint(x: wordStreamBox.position.x, y: -10)
-        wordStreamBox.addChild(label)
+        label.position = CGPoint(x: fallingBox.position.x, y: -10)
         
-        wordStreamBox.position.y = 700
+        fallingBox.addChild(label)
         
+        fallingBox.position.y = 600
+        fallingBox.name = wordList[Int(randomIndex)]
+        
+        let boxSize = CGSize(width: label.frame.width , height: fallingBox.frame.height)
+
+        
+        // Assign the physicsBody first
+        fallingBox.physicsBody = SKPhysicsBody(rectangleOf: boxSize)
+        fallingBox.physicsBody?.linearDamping = 0.5
+        
+        // Then, you can set these properties
         if randomIndex % 2 == 0 {
-            wordStreamBox.color = .lightGray
-            
+            fallingBox.color = .lightGray
+            fallingBox.physicsBody?.categoryBitMask = CollisionType.grayFallingBox.rawValue
+            fallingBox.physicsBody?.collisionBitMask = CollisionType.grayBox.rawValue | CollisionType.grayFallingBox.rawValue
+            fallingBox.physicsBody?.contactTestBitMask = CollisionType.grayBox.rawValue | CollisionType.grayFallingBox.rawValue
         } else {
-            wordStreamBox.color = .white
-            
+            fallingBox.color = .white
+            fallingBox.physicsBody?.categoryBitMask = CollisionType.whiteFallingBox.rawValue
+            fallingBox.physicsBody?.collisionBitMask = CollisionType.whiteBox.rawValue | CollisionType.whiteFallingBox.rawValue
+            fallingBox.physicsBody?.contactTestBitMask = CollisionType.whiteBox.rawValue | CollisionType.whiteFallingBox.rawValue
         }
         
-        wordStreamBox.physicsBody = SKPhysicsBody(rectangleOf: wordStreamBox.size)
-        wordStreamBox.physicsBody?.linearDamping = 0.999
-        
         var fruitsCopy = wordList
-        
         
         if fruitsCopy.count == 0 {
             wordTimer?.invalidate()
             stopEverything = true
-
-            
         }
-        
-        
     }
-
+    
+    
     
     @objc func removeItems(){
-           for child in children{
-               if child.position.y < -self.size.height - 100{
-                   child.removeFromParent()
-               }
-           }
-           
-       }
+        for child in children{
+            if child.position.y < -self.size.height - 100{
+                child.removeFromParent()
+            }
+        }
+        
+    }
     
-
+    
     
     
     func touchDown(atPoint pos : CGPoint) {
-
+        
     }
     
     func touchMoved(toPoint pos : CGPoint) {
-
+        
     }
     
     func touchUp(atPoint pos : CGPoint) {
-
+        
     }
     
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         
+        for touch in touches {
+            let location = touch.location(in: self)
+            boxParent.run(SKAction.moveTo(x: location.x, duration: 0.1))
+        }
+        
         for t in touches { self.touchDown(atPoint: t.location(in: self)) }
-    
-        //for touch in touches {
-        //    let location = touch.location(in: self)
-        //    boxParent.run(SKAction.moveTo(x: location.x, duration: 0.1))
-        //}
+        
+        
+        
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         for touch in touches {
             let location = touch.location(in: self)
-            boxParent.run(SKAction.moveTo(x: location.x, duration: 0.1))
+            boxParent.run(SKAction.moveTo(x: location.x * 2, duration: 0.13))
         }
         for t in touches { self.touchMoved(toPoint: t.location(in: self)) }
         
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for touch in touches {
-            let location = touch.location(in: self)
-            boxParent.run(SKAction.moveTo(x: location.x * 1.5, duration: 0.1))
-        }
-
-        
         for t in touches { self.touchUp(atPoint: t.location(in: self)) }
-
+        
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         for t in touches { self.touchUp(atPoint: t.location(in: self)) }
-
+        
     }
 }
