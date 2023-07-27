@@ -15,15 +15,37 @@ enum CollisionType: UInt32 {
     case grayFallingBox = 8
 }
 
+
 class GameScene: SKScene, SKPhysicsContactDelegate {
+
+    var testPhrases: [TestPhrases] = [
+        TestPhrases(phrase: "Mastering Yourself Is True Power.", wordList: ["Mastering", "Yourself", "Is", "True", "Power"], wordCount: 5, author: "Lao Tzu"),
+        TestPhrases(phrase: "You Are Only Entitled to the Action", wordList: ["You", "Are", "Only", "Entitled", "To", "The", "Action"], wordCount: 7, author: "Bhagavad Gita"),
+        TestPhrases(phrase: "And You May Contribute a Verse", wordList: ["Contribute", "Verse"], wordCount: 7, author: "Walt Whitman"),
+        TestPhrases(phrase: "The Greatest Wealth Is Contentment", wordList: ["The", "Greatest", "Wealth", "Is", "Contentment"], wordCount: 5, author: "Buddha"),
+        TestPhrases(phrase: "Time Is the Wisest Counselor", wordList: ["Time", "Is", "The", "Wisest", "Counselor"], wordCount: 5, author: "Pericles"),
+        TestPhrases(phrase: "Wisdom Begins in Wonder", wordList: ["Wisdom", "Begins", "In", "Wonder"], wordCount: 4, author: "Socrates"),
+        TestPhrases(phrase: "Life Is Short, and Art Long", wordList: ["Life", "Is", "Short,", "Art", "And", "Long"], wordCount: 6, author: "Hippocrates"),
+        TestPhrases(phrase: "All Is Flux, Nothing Stationary", wordList: ["All", "Is", "Flux,", "Nothing", "Stationary"], wordCount: 5, author: "Heraclitus"),
+        TestPhrases(phrase: "Brevity Is the Soul of Wit", wordList: ["Brevity", "Is", "The", "Soul", "Of", "Wit"], wordCount: 6, author: "William Shakespeare"),
+        TestPhrases(phrase: "All the World's a Stage", wordList: ["World's", "Stage"], wordCount: 5, author: "William Shakespeare"),
+        TestPhrases(phrase: "Dream Big, Work Hard", wordList: ["Dream", "Big,", "Work", "Hard"], wordCount: 4, author: "Unknown"),
+        TestPhrases(phrase: "Conquer Yourself Rather Than the World", wordList: ["Conquer", "Yourself", "Rather", "Than", "The", "World"], wordCount: 6, author: "Descartes"),
+        TestPhrases(phrase: "Wisdom Outweighs Any Wealth", wordList: ["Wisdom", "Outweighs", "Any", "Wealth"], wordCount: 4, author: "Sophocles"),
+        TestPhrases(phrase: "Truth Is the Highest Thing", wordList: ["Truth", "Is", "The", "Highest", "Thing"], wordCount: 5, author: "Swami Vivekananda"),
+    ]
+
+
+    var score = 0
     
+
     private var boxParent = SKSpriteNode()
     
     // Generate the boxes.
     
     let gap: CGFloat = 0
     
-    var lastWord = ""
+    //var lastWord = ""
     
     
     
@@ -36,16 +58,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private weak var removeItemsTimer: Timer?
     
     
-    var wordList = ["The", "Only", "Way", "Out", "Is","Through"]
+    var wordList: [String] = []
+    
+    var answerPhrase: String = ""
     
     var wordBank: [String] = []
     
+    var totalBoxes: Int = 0
     
-    let colorPalette: [UIColor] = [.systemBlue, .cyan, .green, .yellow, .orange, .red]
-    
-    
-    let totalBoxes = 6
-    
+    var scoreSquares: [SKShapeNode] = []
+
     
     
     override func didMove(to view: SKView) {
@@ -54,6 +76,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         physicsWorld.contactDelegate = self
         
+        for i in 1...10 {
+                if let square = self.childNode(withName: "\(i)") as? SKShapeNode {
+                    scoreSquares.append(square)
+                }
+            }
+        
+        
+        let randomIndex = Int(arc4random_uniform(UInt32(testPhrases.count)))
+
+        wordList = testPhrases[randomIndex].wordList
+        answerPhrase = testPhrases[randomIndex].phrase
+        totalBoxes = testPhrases[randomIndex].wordCount
         
         
         let boxWidth: CGFloat = ((self.frame.width * 0.8) + 10) / (CGFloat(totalBoxes))
@@ -114,6 +148,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     override func update(_ currentTime: TimeInterval) {
+        if stopEverything == true {
+            endGame()
+
+        }
         
     }
     
@@ -148,6 +186,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                             explosion.position = whiteFallingBox.position
                             addChild(explosion)
                         }
+                        
+                        if let explosion = SKEmitterNode(fileNamed: "Explosion2") {
+                            explosion.position = whiteFallingBox.position
+                            addChild(explosion)
+                        }
+                        
+                        if score == 10 {
+                            stopEverything = true
+                        } else {
+                            score += 1
+
+                        }
+                        
+                        updateScoreBoxes()
                         whiteFallingBox.removeFromParent()
                     }
                 }
@@ -191,7 +243,28 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
+    func endGame() {
+        boxParent.removeAllChildren()
+        boxParent.color = .white
+        boxParent.run(SKAction.move(to: self.anchorPoint, duration: 0.5))
+        let label = SKLabelNode(text: answerPhrase)
+        label.fontColor = .white
+        label.fontSize = 30
+        label.fontName = "Helvetica Neue Bold"
+        label.position.y = 42
+        let moveAction = SKAction.fadeIn(withDuration: 0.4)
+        label.run(moveAction)
+        boxParent.addChild(label)
+        
+    }
     
+    func updateScoreBoxes(){
+        for i in stride(from: 0, to: score, by: 1) {
+            let element = scoreSquares[i]
+            // Do something with the element
+            element.alpha = 0.1
+        }
+    }
     
     @objc func createWordStream() {
         
