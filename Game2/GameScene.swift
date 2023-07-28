@@ -15,7 +15,7 @@ enum CollisionType: UInt32 {
 }
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
-
+    
     // test phrases
     var testPhrases: [TestPhrases] = [
         TestPhrases(phrase: "Life Is Short, And Art Long", wordList: ["Life", "Is", "Short", "And", "Art", "Long"], wordCount: 6, author: "Hippocrates"),
@@ -59,7 +59,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         // random index for test phrases
         let randomIndex = Int(arc4random_uniform(UInt32(testPhrases.count)))
-
+        
         // populate data from testPhrase array
         wordList = testPhrases[randomIndex].wordList
         answerPhrase = testPhrases[randomIndex].phrase
@@ -67,15 +67,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         // setup the parent box and child boxes
         setupBoxes(totalBoxes: totalBoxes, boxParent: boxParent)
-
-        // setup timers
-        if stopEverything == false {
-            wordTimer = Timer.scheduledTimer(timeInterval: TimeInterval(Helper().randomBetweenTwoNumbers(firstNumber: 1.3, secondNumber: 1.5)), target: self, selector: #selector(GameScene.createWordStream), userInfo: nil, repeats: true)
-            removeItemsTimer = Timer.scheduledTimer(timeInterval: TimeInterval(0.5), target: self, selector: #selector(GameScene.removeItems), userInfo: nil, repeats: true)
-            
-        }
+        
+        // game timers
+        wordTimer = Timer.scheduledTimer(timeInterval: TimeInterval(Helper().randomBetweenTwoNumbers(firstNumber: 1.3, secondNumber: 1.5)), target: self, selector: #selector(GameScene.createWordStream), userInfo: nil, repeats: true)
+        removeItemsTimer = Timer.scheduledTimer(timeInterval: TimeInterval(0.5), target: self, selector: #selector(GameScene.removeItems), userInfo: nil, repeats: true)
+        
     }
-
+    
     
     override func update(_ currentTime: TimeInterval) {
         if stopEverything == true {
@@ -109,7 +107,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                             stopEverything = true
                         } else {
                             score += 1
-
+                            
                         }
                         
                         updateScoreBoxes()
@@ -168,10 +166,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func setupScoreBoxes(){
         // access gamescene score nodes
         for i in 1...10 {
-                if let square = self.childNode(withName: "\(i)") as? SKShapeNode {
-                    scoreSquares.append(square)
-                }
+            if let square = self.childNode(withName: "\(i)") as? SKShapeNode {
+                scoreSquares.append(square)
             }
+        }
     }
     
     func updateScoreBoxes(){
@@ -183,7 +181,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     
     func setupBoxes(totalBoxes: Int, boxParent: SKSpriteNode) {
-
+        
         // setup word box width
         let boxWidth: CGFloat = ((self.frame.width * 0.8) + 10) / (CGFloat(totalBoxes))
         
@@ -192,7 +190,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             // create word box
             let box = SKShapeNode(rectOf: CGSize(width: boxWidth, height: 100))
-
+            
             // calculate word box size
             let size = CGSize(width: box.frame.width / 2 , height: box.frame.height)
             
