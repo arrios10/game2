@@ -235,8 +235,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let size = CGSize(width: ((self.frame.width * 0.8) + 10) / (CGFloat(totalBoxes)), height: 100)
             
             let fallingBox = SKShapeNode(rectOf: size)
-            let randomIndex = Int(arc4random_uniform(UInt32(wordBank.count)))
-            addChild(fallingBox)
+            //let randomIndex = Int(arc4random_uniform(UInt32(wordBank.count)))
+            //addChild(fallingBox)
             
             
             if wordBank.isEmpty {
@@ -244,23 +244,37 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 wordBank = wordList
             }
             
-            let label = SKLabelNode(text: wordBank[Int(randomIndex)])
-            label.fontColor = .white
-            label.fontSize = 23
-            label.fontName = "Helvetica Neue Bold"
-            label.position = CGPoint(x: fallingBox.position.x, y: -10)
+            if let randomWord = wordBank.randomElement(),
+               let index = wordBank.firstIndex(of: randomWord) {
+                addChild(fallingBox)
+                
+                let label = SKLabelNode(text: randomWord)
+                label.fontColor = .white
+                label.fontSize = 23
+                label.fontName = "Helvetica Neue Bold"
+                label.position = CGPoint(x: fallingBox.position.x, y: -10)
+                
+                fallingBox.addChild(label)
+                fallingBox.name = randomWord
+                wordBank.remove(at: index)
+            }
             
-            fallingBox.addChild(label)
+            //let label = SKLabelNode(text: wordBank[Int(randomIndex)])
+            //label.fontColor = .white
+            //label.fontSize = 23
+            //label.fontName = "Helvetica Neue Bold"
+            //label.position = CGPoint(x: fallingBox.position.x, y: -10)
+            //fallingBox.addChild(label)
             
             fallingBox.position.x = CGFloat.random(in: -69.0...69.0)
             fallingBox.position.y = self.frame.maxY + 100
-            fallingBox.name = wordBank[Int(randomIndex)]
+            //fallingBox.name = wordBank[Int(randomIndex)]
             
             fallingBox.strokeColor = .systemYellow
             fallingBox.lineWidth = 3
             
-            let boxSize = CGSize(width: label.frame.width , height: fallingBox.frame.height)
-            wordBank.remove(at: randomIndex)
+            let boxSize = CGSize(width: fallingBox.frame.width - 20 , height: fallingBox.frame.height)
+            //wordBank.remove(at: randomIndex)
             
             // fallingbox physics
             fallingBox.physicsBody = SKPhysicsBody(rectangleOf: boxSize)
@@ -268,8 +282,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             fallingBox.physicsBody?.categoryBitMask = CollisionType.whiteFallingBox.rawValue
             fallingBox.physicsBody?.collisionBitMask = CollisionType.whiteBox.rawValue | CollisionType.whiteFallingBox.rawValue | CollisionType.grayFallingBox.rawValue
             fallingBox.physicsBody?.contactTestBitMask = CollisionType.whiteBox.rawValue | CollisionType.whiteFallingBox.rawValue | CollisionType.grayFallingBox.rawValue
-            
-            
         }
     }
     
