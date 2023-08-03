@@ -10,11 +10,9 @@ import Foundation
 struct TestPhrases {
     let phrase: String
     let wordList: [String]
-    let wordCount: Int
     let author: String
-    
-    
-    
+    let notes: String
+    let wordCount: Int
 }
 
 

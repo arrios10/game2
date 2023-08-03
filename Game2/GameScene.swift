@@ -18,11 +18,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // test phrases
     var testPhrases: [TestPhrases] = [
-        TestPhrases(phrase: "Life Is Short, And Art Long", wordList: ["Life", "Is", "Short", "And", "Art", "Long"], wordCount: 6, author: "Hippocrates"),
-        TestPhrases(phrase: "All Is Flux, Nothing Stays Still", wordList: ["All", "Is", "Flux", "Nothing", "Stays", "Still"], wordCount: 6, author: "Heraclitus"),
-        TestPhrases(phrase: "Brevity Is The Soul Of Wit", wordList: ["Brevity", "Is", "The", "Soul", "Of", "Wit"], wordCount: 6, author: "William Shakespeare"),
-        TestPhrases(phrase: "Conquer Yourself Rather Than the World", wordList: ["Conquer", "Yourself", "Rather", "Than", "The", "World"], wordCount: 6, author: "Descartes"),
+        TestPhrases(phrase: "I think, therefore I am", wordList: ["I", "Think", "Therefore","I", "Am"], author: "Descartes", notes: "", wordCount: 5),
+        TestPhrases(phrase: "I have my job be", wordList: ["To", "Be", "Or", "Not", "Be"], author: "Shakespeare", notes: "", wordCount: 5),
+        TestPhrases(phrase: "Do or do not, try", wordList: ["Do", "Or", "Do", "Not", "Try"], author: "Yoda", notes: "", wordCount: 5),
+        TestPhrases(phrase: "Yes, we can change it", wordList: ["Yes", "We", "Can", "Change", "It"], author: "Obama", notes: "", wordCount: 5),
+        TestPhrases(phrase: "Love all, trust a few", wordList: ["Love", "All", "Trust", "A", "Few"], author: "Shakespeare", notes: "", wordCount: 5),
+        TestPhrases(phrase: "Be the change you seek", wordList: ["Be", "The", "Change", "You", "Seek"], author: "Gandhi", notes: "", wordCount: 5),
+        TestPhrases(phrase: "The only thing we fear", wordList: ["The", "Only", "Thing", "We", "Fear"], author: "Roosevelt", notes: "", wordCount: 5),
+        TestPhrases(phrase: "Make haste slowly, achieve more", wordList: ["Make", "Haste", "Slowly", "Achieve", "More"], author: "Augustus", notes: "", wordCount: 5),
+        TestPhrases(phrase: "Know thyself, then know others", wordList: ["Know", "Thyself", "Then", "Know", "Others"], author: "Confucius", notes: "", wordCount: 5),
+        TestPhrases(phrase: "Your friends close, enemies closer", wordList: ["Your", "Friends", "Close", "Enemies", "Closer"], author: "Sun Tzu", notes: "", wordCount: 5)
     ]
+
     
     // nodes
     private var boxParent = SKSpriteNode()
@@ -97,7 +104,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         addWordToBox(wordBox: wordBox, fallingBox: fallingBox)
                         
                         fallingBox.removeFromParent()
-                        wordList.removeAll { $0 == wordBox.name!}
+                        
+                        if let index = wordList.firstIndex(of: wordBox.name!) {
+                            wordList.remove(at: index)
+                        }
+                        
+                        wordBox.name = nil
+                        
                     } else{
                         
                         // blow up box effects on impact
@@ -124,7 +137,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func addWordToBox(wordBox: SKShapeNode, fallingBox: SKNode) {
         let label = SKLabelNode(text: wordBox.name)
         label.fontColor = .black
-        label.fontSize = 24
+        label.fontSize = 25
         label.fontName = "Helvetica Neue Bold"
         label.position.y = 42
         wordBox.addChild(label)
@@ -146,6 +159,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             addChild(explosion)
         }
         
+    }
+    
+    @objc func createWordStream() {
+        
+        if wordList.count == 0 {
+            wordTimer?.invalidate()
+            removeItemsTimer?.invalidate()
+            stopEverything = true
+        }
+        
+        if stopEverything == false {
+            
+            let size = CGSize(width: ((self.frame.width * 0.8) + 10) / (CGFloat(totalBoxes)), height: 125)
+            
+            spawnFallingBox(size: size)
+            
+        }
     }
     
     func endGame() {
@@ -172,14 +202,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
-    func updateScoreBoxes(){
-        for i in stride(from: 0, to: score, by: 1) {
-            let element = scoreSquares[i]
-            element.alpha = 0.1
-        }
-    }
-    
-    
     func setupBoxes(totalBoxes: Int, boxParent: SKSpriteNode) {
         
         // setup word box width
@@ -189,7 +211,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         for i in 0..<totalBoxes {
             
             // create word box
-            let box = SKShapeNode(rectOf: CGSize(width: boxWidth, height: 100))
+            let box = SKShapeNode(rectOf: CGSize(width: boxWidth, height: 125))
             
             // calculate word box size
             let size = CGSize(width: box.frame.width / 2 , height: box.frame.height)
@@ -222,69 +244,51 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
     }
     
-    @objc func createWordStream() {
-        
-        if wordList.count == 0 {
-            wordTimer?.invalidate()
-            removeItemsTimer?.invalidate()
-            stopEverything = true
-        }
-        
-        if stopEverything == false {
-            
-            let size = CGSize(width: ((self.frame.width * 0.8) + 10) / (CGFloat(totalBoxes)), height: 100)
-            
-            let fallingBox = SKShapeNode(rectOf: size)
-            //let randomIndex = Int(arc4random_uniform(UInt32(wordBank.count)))
-            //addChild(fallingBox)
-            
-            
-            if wordBank.isEmpty {
-                // If it is, repopulate it with the original wordList.
-                wordBank = wordList
-            }
-            
-            if let randomWord = wordBank.randomElement(),
-               let index = wordBank.firstIndex(of: randomWord) {
-                addChild(fallingBox)
-                
-                let label = SKLabelNode(text: randomWord)
-                label.fontColor = .white
-                label.fontSize = 23
-                label.fontName = "Helvetica Neue Bold"
-                label.position = CGPoint(x: fallingBox.position.x, y: -10)
-                
-                fallingBox.addChild(label)
-                fallingBox.name = randomWord
-                wordBank.remove(at: index)
-            }
-            
-            //let label = SKLabelNode(text: wordBank[Int(randomIndex)])
-            //label.fontColor = .white
-            //label.fontSize = 23
-            //label.fontName = "Helvetica Neue Bold"
-            //label.position = CGPoint(x: fallingBox.position.x, y: -10)
-            //fallingBox.addChild(label)
-            
-            fallingBox.position.x = CGFloat.random(in: -69.0...69.0)
-            fallingBox.position.y = self.frame.maxY + 100
-            //fallingBox.name = wordBank[Int(randomIndex)]
-            
-            fallingBox.strokeColor = .systemYellow
-            fallingBox.lineWidth = 3
-            
-            let boxSize = CGSize(width: fallingBox.frame.width - 20 , height: fallingBox.frame.height)
-            //wordBank.remove(at: randomIndex)
-            
-            // fallingbox physics
-            fallingBox.physicsBody = SKPhysicsBody(rectangleOf: boxSize)
-            fallingBox.physicsBody?.linearDamping = 0.5
-            fallingBox.physicsBody?.categoryBitMask = CollisionType.whiteFallingBox.rawValue
-            fallingBox.physicsBody?.collisionBitMask = CollisionType.whiteBox.rawValue | CollisionType.whiteFallingBox.rawValue | CollisionType.grayFallingBox.rawValue
-            fallingBox.physicsBody?.contactTestBitMask = CollisionType.whiteBox.rawValue | CollisionType.whiteFallingBox.rawValue | CollisionType.grayFallingBox.rawValue
-        }
-    }
     
+    func spawnFallingBox(size: CGSize) {
+        
+        if wordBank.isEmpty {
+            // If it is, repopulate it with the original wordList.
+            wordBank = wordList
+        }
+        
+        let fallingBox = SKShapeNode(rectOf: size)
+        
+        if let randomWord = wordBank.randomElement(),
+           let index = wordBank.firstIndex(of: randomWord) {
+            addChild(fallingBox)
+            
+            let label = SKLabelNode(text: randomWord)
+            label.fontColor = .white
+            label.fontSize = 25
+            label.fontName = "Helvetica Neue Bold"
+            label.position = CGPoint(x: fallingBox.position.x, y: -10)
+            
+            fallingBox.addChild(label)
+            fallingBox.name = randomWord
+            
+            fallingBox.userData = [
+                "word": randomWord,
+                "index": index,
+            ]
+            wordBank.remove(at: index)
+        }
+        
+        fallingBox.position.x = CGFloat.random(in: -69.0...69.0)
+        fallingBox.position.y = self.frame.maxY + 100
+        
+        fallingBox.strokeColor = .systemYellow
+        fallingBox.lineWidth = 3
+        
+        let boxSize = CGSize(width: fallingBox.frame.width - 20 , height: fallingBox.frame.height)
+        
+        // fallingbox physics
+        fallingBox.physicsBody = SKPhysicsBody(rectangleOf: boxSize)
+        fallingBox.physicsBody?.linearDamping = 0.5
+        fallingBox.physicsBody?.categoryBitMask = CollisionType.whiteFallingBox.rawValue
+        fallingBox.physicsBody?.collisionBitMask = CollisionType.whiteBox.rawValue | CollisionType.whiteFallingBox.rawValue | CollisionType.grayFallingBox.rawValue
+        fallingBox.physicsBody?.contactTestBitMask = CollisionType.whiteBox.rawValue | CollisionType.whiteFallingBox.rawValue | CollisionType.grayFallingBox.rawValue
+    }
     
     
     @objc func removeItems(){
@@ -295,6 +299,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         
     }
+    
+    func updateScoreBoxes(){
+        for i in stride(from: 0, to: score, by: 1) {
+            let element = scoreSquares[i]
+            element.alpha = 0.1
+        }
+    }
+    
     
     // MARK: - Input Handling Methods
     
