@@ -27,8 +27,8 @@ class GameViewController: UIViewController {
             view.ignoresSiblingOrder = true
             view.preferredFramesPerSecond = 120  // Set your preferred FPS here.
 
-            view.showsFPS = true
-            view.showsNodeCount = true
+            view.showsFPS = false
+            view.showsNodeCount = false
             //view.showsPhysics = true
         }
     }

@@ -18,18 +18,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // test phrases
     var testPhrases: [TestPhrases] = [
-        TestPhrases(phrase: "I think, therefore I am", wordList: ["I", "Think", "Therefore","I", "Am"], author: "Descartes", notes: "", wordCount: 5),
-        TestPhrases(phrase: "I have my job be", wordList: ["To", "Be", "Or", "Not", "Be"], author: "Shakespeare", notes: "", wordCount: 5),
-        TestPhrases(phrase: "Do or do not, try", wordList: ["Do", "Or", "Do", "Not", "Try"], author: "Yoda", notes: "", wordCount: 5),
-        TestPhrases(phrase: "Yes, we can change it", wordList: ["Yes", "We", "Can", "Change", "It"], author: "Obama", notes: "", wordCount: 5),
-        TestPhrases(phrase: "Love all, trust a few", wordList: ["Love", "All", "Trust", "A", "Few"], author: "Shakespeare", notes: "", wordCount: 5),
-        TestPhrases(phrase: "Be the change you seek", wordList: ["Be", "The", "Change", "You", "Seek"], author: "Gandhi", notes: "", wordCount: 5),
-        TestPhrases(phrase: "The only thing we fear", wordList: ["The", "Only", "Thing", "We", "Fear"], author: "Roosevelt", notes: "", wordCount: 5),
-        TestPhrases(phrase: "Make haste slowly, achieve more", wordList: ["Make", "Haste", "Slowly", "Achieve", "More"], author: "Augustus", notes: "", wordCount: 5),
-        TestPhrases(phrase: "Know thyself, then know others", wordList: ["Know", "Thyself", "Then", "Know", "Others"], author: "Confucius", notes: "", wordCount: 5),
-        TestPhrases(phrase: "Your friends close, enemies closer", wordList: ["Your", "Friends", "Close", "Enemies", "Closer"], author: "Sun Tzu", notes: "", wordCount: 5)
+        TestPhrases(phrase: "Time is now, or never.", wordList: ["Time", "Is", "Now","Or", "Never"], source: "", notes: "", wordCount: 5, wuhbaNumber: 1),
+        TestPhrases(phrase: "Action is its own reward.", wordList: ["Action", "Is", "Its", "Own", "Reward"], source: "", notes: "", wordCount: 5, wuhbaNumber: 2),
+        TestPhrases(phrase: "As I think, I am.", wordList: ["As", "I", "Think", "I", "Am"], source: "", notes: "", wordCount: 5, wuhbaNumber: 3),
+        TestPhrases(phrase: "Crowded thoughts yield absent minds.", wordList: ["Crowded", "Thoughts", "Yield", "Absent", "Minds"], source: "", notes: "", wordCount: 5, wuhbaNumber: 4),
+        TestPhrases(phrase: "Hard to build, not blast.", wordList: ["Hard", "To", "Build", "Not", "Blast"], source: "", notes: "", wordCount: 5, wuhbaNumber: 5),
+        TestPhrases(phrase: "I think, so I will.", wordList: ["I", "Think", "So", "I", "Will"], source: "", notes: "", wordCount: 5, wuhbaNumber: 6),
+        TestPhrases(phrase: "Kind words unlock iron doors.", wordList: ["Kind", "Words", "Unlock", "Iron", "Doors"], source: "", notes: "", wordCount: 5, wuhbaNumber: 7),
+        TestPhrases(phrase: "Last mile is the longest.", wordList: ["Last", "Mile", "Is", "The", "Longest"], source: "", notes: "", wordCount: 5, wuhbaNumber: 8),
+        TestPhrases(phrase: "Make a long story short.", wordList: ["Make", "A", "Long", "Story", "Short"], source: "", notes: "", wordCount: 5, wuhbaNumber: 9),
+        TestPhrases(phrase: "My habits are my base.", wordList: ["My", "Habits", "Are", "My", "Base"], source: "", notes: "", wordCount: 5, wuhbaNumber: 10),
+        TestPhrases(phrase: "Step by step with ferocity.", wordList: ["Step", "By", "Step", "With", "Ferocity"], source: "", notes: "", wordCount: 5, wuhbaNumber: 11),
+        TestPhrases(phrase: "This phrase is not true.", wordList: ["This", "Phrase", "Is", "Not", "True"], source: "", notes: "", wordCount: 5, wuhbaNumber: 12),
+        TestPhrases(phrase: "Through hardship, to the stars.", wordList: ["Through", "Hardship", "To", "The", "Stars"], source: "", notes: "", wordCount: 5, wuhbaNumber: 13),
+        TestPhrases(phrase: "Time is now, or never.", wordList: ["Time", "Is", "Now", "Or", "Never"], source: "", notes: "", wordCount: 5, wuhbaNumber: 14),
+        TestPhrases(phrase: "Time is the only currency.", wordList: ["Time", "Is", "The", "Only", "Currency"], source: "", notes: "", wordCount: 5, wuhbaNumber: 15),
+        TestPhrases(phrase: "What is above, is below.", wordList: ["What", "Is", "Above", "Is", "Below"], source: "", notes: "", wordCount: 5, wuhbaNumber: 16)
     ]
-
+    
     
     // nodes
     private var boxParent = SKSpriteNode()
@@ -38,6 +44,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let gap: CGFloat = 0
     var totalBoxes: Int = 0
     var score = 0
+    
+    var pauseButton = SKShapeNode()
+    var pauseButton2 = SKShapeNode()
+    var numberLabel = SKLabelNode()
+
     
     // timers
     private weak var wordTimer: Timer?
@@ -67,10 +78,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // random index for test phrases
         let randomIndex = Int(arc4random_uniform(UInt32(testPhrases.count)))
         
+        // wuhba number label
+        numberLabel = self.childNode(withName: "wuhbaNumber") as! SKLabelNode
+        numberLabel.isHidden = true
+        numberLabel.text = "Wuhba No. " + String(testPhrases[randomIndex].wuhbaNumber)
+
+        
         // populate data from testPhrase array
         wordList = testPhrases[randomIndex].wordList
         answerPhrase = testPhrases[randomIndex].phrase
         totalBoxes = testPhrases[randomIndex].wordCount
+        
+        
+        // setup pause/start buttons
+        pauseButton = self.childNode(withName: "pausebar") as! SKShapeNode
+        pauseButton2 = self.childNode(withName: "pausebar2") as! SKShapeNode
+
+        pauseButton.alpha = 0.0
+        pauseButton2.alpha = 0.0
         
         // setup the parent box and child boxes
         setupBoxes(totalBoxes: totalBoxes, boxParent: boxParent)
@@ -116,7 +141,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         // blow up box effects on impact
                         animateBoxImpact(fallingBox: fallingBox)
                         
-                        if score == 10 {
+                        if score == 9 {
+                            score += 1
                             stopEverything = true
                         } else {
                             score += 1
@@ -171,8 +197,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         if stopEverything == false {
             
-            let size = CGSize(width: ((self.frame.width * 0.8) + 10) / (CGFloat(totalBoxes)), height: 125)
-            
+            let size = CGSize(width: ((self.frame.width * 0.8) + 10) / (CGFloat(totalBoxes)), height: 122)
             spawnFallingBox(size: size)
             
         }
@@ -184,12 +209,72 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         boxParent.run(SKAction.move(to: self.anchorPoint, duration: 0.5))
         let label = SKLabelNode(text: answerPhrase)
         label.fontColor = .white
-        label.fontSize = 30
+        label.fontSize = 35
         label.fontName = "Helvetica Neue Bold"
         label.position.y = 42
-        let moveAction = SKAction.fadeIn(withDuration: 0.4)
-        label.run(moveAction)
+        let fadeAction = SKAction.fadeIn(withDuration: 0.4)
+        label.run(fadeAction)
         boxParent.addChild(label)
+        finalScoreBoxes()
+    }
+    
+    func finalScoreBoxes(){
+        for node in scoreSquares {
+            // Do something with each shape node, for example, change the stroke color
+            
+            if let nodeName = node.name, let nodeNumber = Int(nodeName) {
+                // The conversion was successful and nodeNumber now holds the integer value
+                
+                switch nodeNumber {
+                case 1:
+                    let moveAction = SKAction.move(to: CGPoint(x: self.frame.midX + 180, y: self.frame.midY - 42), duration: 0.21)
+                    node.run(moveAction)
+                case 2:
+                    let moveAction = SKAction.move(to: CGPoint(x: self.frame.midX + 140, y: self.frame.midY - 42), duration: 0.21)
+                    node.run(moveAction)
+                    
+                case 3:
+                    let moveAction = SKAction.move(to: CGPoint(x: self.frame.midX + 100, y: self.frame.midY - 42), duration: 0.21)
+                    node.run(moveAction)
+                    
+                case 4:
+                    let moveAction = SKAction.move(to: CGPoint(x: self.frame.midX + 60, y: self.frame.midY - 42), duration: 0.21)
+                    node.run(moveAction)
+                    
+                case 5:
+                    let moveAction = SKAction.move(to: CGPoint(x: self.frame.midX + 20, y: self.frame.midY - 42), duration: 0.21)
+                    node.run(moveAction)
+                    
+                case 6:
+                    let moveAction = SKAction.move(to: CGPoint(x: self.frame.midX - 20, y: self.frame.midY - 42), duration: 0.21)
+                    node.run(moveAction)
+                    
+                case 7:
+                    let moveAction = SKAction.move(to: CGPoint(x: self.frame.midX - 60, y: self.frame.midY - 42), duration: 0.21)
+                    node.run(moveAction)
+                case 8:
+                    let moveAction = SKAction.move(to: CGPoint(x: self.frame.midX - 100, y: self.frame.midY - 42), duration: 0.21)
+                    node.run(moveAction)
+                    
+                case 9:
+                    let moveAction = SKAction.move(to: CGPoint(x: self.frame.midX - 140, y: self.frame.midY - 42), duration: 0.21)
+                    node.run(moveAction)
+                    
+                case 10:
+                    let moveAction = SKAction.move(to: CGPoint(x: self.frame.midX - 180, y: self.frame.midY - 42), duration: 0.21)
+                    node.run(moveAction)
+                    
+                default:
+                    print("default hit")
+                }
+                
+                
+                
+            }
+            
+        }
+        
+        numberLabel.isHidden = false
         
     }
     
@@ -206,12 +291,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         // setup word box width
         let boxWidth: CGFloat = ((self.frame.width * 0.8) + 10) / (CGFloat(totalBoxes))
-        
+        print(boxWidth)
         // setup word boxes
         for i in 0..<totalBoxes {
             
             // create word box
-            let box = SKShapeNode(rectOf: CGSize(width: boxWidth, height: 125))
+            let box = SKShapeNode(rectOf: CGSize(width: boxWidth, height: 122))
             
             // calculate word box size
             let size = CGSize(width: box.frame.width / 2 , height: box.frame.height)
@@ -274,7 +359,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             wordBank.remove(at: index)
         }
         
-        fallingBox.position.x = CGFloat.random(in: -69.0...69.0)
+        fallingBox.position.x = CGFloat.random(in: -82.0...82.0)
         fallingBox.position.y = self.frame.maxY + 100
         
         fallingBox.strokeColor = .systemYellow
@@ -304,6 +389,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         for i in stride(from: 0, to: score, by: 1) {
             let element = scoreSquares[i]
             element.alpha = 0.1
+            element.fillColor = .white
         }
     }
     
