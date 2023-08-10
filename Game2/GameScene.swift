@@ -16,6 +16,9 @@ enum CollisionType: UInt32 {
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
+    var gameMenu: GameMenu!
+
+    
     // test phrases
     var testPhrases: [TestPhrases] = [
         TestPhrases(phrase: "Time is now, or never.", wordList: ["Time", "Is", "Now","Or", "Never"], source: "", notes: "", wordCount: 5, wuhbaNumber: 1),
@@ -41,7 +44,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var boxParent = SKSpriteNode()
     var scoreSquares: [SKShapeNode] = []
     
-    let gap: CGFloat = 0
+    let boxPositions: [CGFloat] = [-244.0,-122.0,0.0,122.0,244.0]
     var totalBoxes: Int = 0
     var score = 0
     
@@ -101,8 +104,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         setupBoxes(totalBoxes: totalBoxes, boxParent: boxParent)
         
         // game timers
-        wordTimer = Timer.scheduledTimer(timeInterval: TimeInterval(Helper().randomBetweenTwoNumbers(firstNumber: 1.3, secondNumber: 1.5)), target: self, selector: #selector(GameScene.createWordStream), userInfo: nil, repeats: true)
+        
         removeItemsTimer = Timer.scheduledTimer(timeInterval: TimeInterval(0.5), target: self, selector: #selector(GameScene.removeItems), userInfo: nil, repeats: true)
+        
+
+            wordTimer = Timer.scheduledTimer(timeInterval: TimeInterval(Helper().randomBetweenTwoNumbers(firstNumber: 1.3, secondNumber: 1.5)), target: self, selector: #selector(GameScene.createWordStream), userInfo: nil, repeats: true)
+ 
         
     }
     
@@ -117,7 +124,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let mask = contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask
         
         if mask == CollisionType.whiteBox.rawValue | CollisionType.whiteFallingBox.rawValue {
-            print("White box and white falling box collided")
             
             if let wordBox = contact.bodyA.node as? SKShapeNode {
                 // use whiteBox
@@ -187,6 +193,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
     }
     
+    func backToMenuWithDelay() {
+        
+        // Schedule the scene transition after a delay
+        let delayAction = SKAction.wait(forDuration: 3.0)
+        let transitionAction = SKAction.run { [weak self] in
+            self?.scene?.view?.presentScene(self!.gameMenu, transition: .crossFade(withDuration: TimeInterval(0.5)))
+        }
+        
+        run(SKAction.sequence([delayAction, transitionAction]))
+    }
+    
     @objc func createWordStream() {
         
         if wordList.count == 0 {
@@ -216,7 +233,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         label.run(fadeAction)
         boxParent.addChild(label)
         finalScoreBoxes()
+        backToMenuWithDelay()
+   
+        
     }
+    
+ 
+
     
     func finalScoreBoxes(){
         for node in scoreSquares {
@@ -304,7 +327,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             // box properties
             box.strokeColor = .white
             box.lineWidth = 8
-            box.position.x = CGFloat(i) * (boxWidth) - ((CGFloat(totalBoxes) * boxWidth + CGFloat(totalBoxes - 1)) / 2) + (boxWidth / 2)
+            box.position.x = boxPositions[i]
+
+            print(box.position.x)
             
             boxParent.addChild(box)
             
@@ -318,17 +343,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             // set box name to current word
             box.name = wordList[i]
-            
         }
         
         // set parent box properties
-        let totalWidth: CGFloat = CGFloat(totalBoxes) * boxWidth + CGFloat(totalBoxes - 1) * gap
+        let totalWidth: CGFloat = CGFloat(totalBoxes) * boxWidth + CGFloat(totalBoxes - 1)
         boxParent.position = CGPoint(x: self.frame.midX, y: self.frame.minY + 250)
         boxParent.size.width = totalWidth
         boxParent.color = .white
         
     }
-    
     
     func spawnFallingBox(size: CGSize) {
         
