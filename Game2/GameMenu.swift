@@ -15,6 +15,8 @@ class GameMenu: SKScene {
     let boxPositions: [CGFloat] = [-244.0,-122.0,0.0,122.0,244.0]
     
     var startGame = SKLabelNode()
+    var startBox = SKShapeNode()
+
     //var gameSettings = Settings.sharedInstance
     var gameVC: GameViewController!
 
@@ -59,7 +61,7 @@ class GameMenu: SKScene {
         
         for touch in touches{
             let touchLocation = touch.location(in: self)
-            if atPoint(touchLocation).name == "startGame"{
+            if atPoint(touchLocation).name == "startGame" || atPoint(touchLocation).name == "startBox" {
 
                 let gameScene = GameScene(fileNamed: "GameScene")!
                 gameScene.gameMenu = self

@@ -5,7 +5,9 @@
 //  Created by Andrew Rios on 7/19/23.
 //
 
+import Foundation
 import SpriteKit
+
 
 enum CollisionType: UInt32 {
     case whiteBox = 1
@@ -18,7 +20,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var gameMenu: GameMenu!
 
-    
     // test phrases
     var testPhrases: [TestPhrases] = [
         TestPhrases(phrase: "Time is now, or never.", wordList: ["Time", "Is", "Now","Or", "Never"], source: "", notes: "", wordCount: 5, wuhbaNumber: 1),
@@ -68,6 +69,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // MARK: - Lifecycle Methods
     override func didMove(to view: SKView) {
         
+        //
+        NotificationCenter.default.addObserver(self, selector: #selector(GameScene.appResignActive), name: UIApplication.willResignActiveNotification, object: nil)
+
+        
         // Set up the parent node.
         self.addChild(boxParent)
         
@@ -113,12 +118,30 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
     }
     
+    override public func willMove(from view: SKView) {
+            self.removeAllChildren()
+            self.removeAllActions()
+        }
+    
     
     override func update(_ currentTime: TimeInterval) {
         if stopEverything == true {
             endGame()
         }
     }
+    
+    deinit {
+            print("\n THIS SCENE WAS REMOVED FROM MEMORY (DEINIT) \n")
+        NotificationCenter.default.removeObserver(self)
+        }
+        
+        @objc func appResignActive() {
+            physicsWorld.gravity.dy = 0
+            self.removeAllActions()
+            self.removeAllChildren()
+            backToMenuWithDelay()
+
+        }
     
     func didBegin(_ contact: SKPhysicsContact) {
         let mask = contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask
@@ -169,8 +192,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func addWordToBox(wordBox: SKShapeNode, fallingBox: SKNode) {
         let label = SKLabelNode(text: wordBox.name)
         label.fontColor = .black
+        label.fontName = "AvenirNext-Bold"
         label.fontSize = 25
-        label.fontName = "Helvetica Neue Bold"
         label.position.y = 42
         wordBox.addChild(label)
         let moveAction = SKAction.moveTo(y: -10, duration: 0.21)
@@ -226,8 +249,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         boxParent.run(SKAction.move(to: self.anchorPoint, duration: 0.5))
         let label = SKLabelNode(text: answerPhrase)
         label.fontColor = .white
-        label.fontSize = 35
-        label.fontName = "Helvetica Neue Bold"
+        label.fontName = "AvenirNext-Bold"
+        label.fontSize = 36
         label.position.y = 42
         let fadeAction = SKAction.fadeIn(withDuration: 0.4)
         label.run(fadeAction)
@@ -369,7 +392,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let label = SKLabelNode(text: randomWord)
             label.fontColor = .white
             label.fontSize = 25
-            label.fontName = "Helvetica Neue Bold"
+            label.fontName = "AvenirNext-Bold"
             label.position = CGPoint(x: fallingBox.position.x, y: -10)
             
             fallingBox.addChild(label)
