@@ -21,6 +21,9 @@
 		01BCD2432A71711B005FA071 /* Explosion2.sks in Resources */ = {isa = PBXBuildFile; fileRef = 01BCD2412A71711B005FA071 /* Explosion2.sks */; };
 		01BCD2442A71711B005FA071 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 01BCD2422A71711B005FA071 /* Assets.xcassets */; };
 		01BCD2462A71DA61005FA071 /* TestPhrases.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BCD2452A71DA61005FA071 /* TestPhrases.swift */; };
+		01E580BA2A96F19B00BCA889 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 01E580B92A96F19B00BCA889 /* GoogleService-Info.plist */; };
+		01E580BD2A96F26300BCA889 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 01E580BC2A96F26300BCA889 /* FirebaseAnalytics */; };
+		01E580C32A97069400BCA889 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 01E580C22A97069400BCA889 /* FirebaseCrashlytics */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +43,7 @@
 		01BCD2422A71711B005FA071 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		01BCD2452A71DA61005FA071 /* TestPhrases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestPhrases.swift; sourceTree = "<group>"; };
 		01C2E2682A854AE300EB1ED2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		01E580B92A96F19B00BCA889 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,6 +51,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				01E580BD2A96F26300BCA889 /* FirebaseAnalytics in Frameworks */,
+				01E580C32A97069400BCA889 /* FirebaseCrashlytics in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -59,6 +65,7 @@
 				01BCD2422A71711B005FA071 /* Assets.xcassets */,
 				01A30DCF2A68CF0500ADA84D /* Game2 */,
 				01A30DCE2A68CF0500ADA84D /* Products */,
+				01E580C12A97069400BCA889 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -87,8 +94,16 @@
 				01A30DDF2A68CF0700ADA84D /* LaunchScreen.storyboard */,
 				018F379D2A6E245700027BD0 /* Explosion.sks */,
 				01BCD2412A71711B005FA071 /* Explosion2.sks */,
+				01E580B92A96F19B00BCA889 /* GoogleService-Info.plist */,
 			);
 			path = Game2;
+			sourceTree = "<group>";
+		};
+		01E580C12A97069400BCA889 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -101,12 +116,17 @@
 				01A30DC92A68CF0500ADA84D /* Sources */,
 				01A30DCA2A68CF0500ADA84D /* Frameworks */,
 				01A30DCB2A68CF0500ADA84D /* Resources */,
+				01E580C02A97005000BCA889 /* ShellScript */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = Game2;
+			packageProductDependencies = (
+				01E580BC2A96F26300BCA889 /* FirebaseAnalytics */,
+				01E580C22A97069400BCA889 /* FirebaseCrashlytics */,
+			);
 			productName = Game2;
 			productReference = 01A30DCD2A68CF0500ADA84D /* Game2.app */;
 			productType = "com.apple.product-type.application";
@@ -135,6 +155,9 @@
 				Base,
 			);
 			mainGroup = 01A30DC42A68CF0500ADA84D;
+			packageReferences = (
+				01E580BB2A96F26300BCA889 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			productRefGroup = 01A30DCE2A68CF0500ADA84D /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -151,6 +174,7 @@
 			files = (
 				01A30DDC2A68CF0500ADA84D /* Main.storyboard in Resources */,
 				01A30DD32A68CF0500ADA84D /* GameScene.sks in Resources */,
+				01E580BA2A96F19B00BCA889 /* GoogleService-Info.plist in Resources */,
 				01BCD2432A71711B005FA071 /* Explosion2.sks in Resources */,
 				01A30DDE2A68CF0700ADA84D /* Assets.xcassets in Resources */,
 				016F35A72A81DD1000563109 /* GameMenu.sks in Resources */,
@@ -161,6 +185,31 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		01E580C02A97005000BCA889 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}",
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${PRODUCT_NAME}",
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Info.plist",
+				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/GoogleService-Info.plist",
+				"$(BUILT_PRODUCTS_DIR)/$(EXECUTABLE_PATH)",
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${BUILD_DIR%/Build/*}/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/run\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		01A30DC92A68CF0500ADA84D /* Sources */ = {
@@ -319,6 +368,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = LGFHSY5VS8;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Game2/Info.plist;
@@ -335,7 +385,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = relativistic.Game2;
+				PRODUCT_BUNDLE_IDENTIFIER = relativistic.Wuhba;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -353,6 +403,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = LGFHSY5VS8;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Game2/Info.plist;
@@ -369,7 +420,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = relativistic.Game2;
+				PRODUCT_BUNDLE_IDENTIFIER = relativistic.Wuhba;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -402,6 +453,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		01E580BB2A96F26300BCA889 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		01E580BC2A96F26300BCA889 /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 01E580BB2A96F26300BCA889 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		01E580C22A97069400BCA889 /* FirebaseCrashlytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 01E580BB2A96F26300BCA889 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCrashlytics;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 01A30DC52A68CF0500ADA84D /* Project object */;
 }

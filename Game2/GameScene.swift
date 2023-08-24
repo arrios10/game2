@@ -8,7 +8,6 @@
 import Foundation
 import SpriteKit
 
-
 enum CollisionType: UInt32 {
     case whiteBox = 1
     case grayBox = 2
@@ -337,7 +336,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         // setup word box width
         let boxWidth: CGFloat = ((self.frame.width * 0.8) + 10) / (CGFloat(totalBoxes))
-        print(boxWidth)
+
         // setup word boxes
         for i in 0..<totalBoxes {
             
@@ -351,8 +350,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             box.strokeColor = .white
             box.lineWidth = 8
             box.position.x = boxPositions[i]
-
-            print(box.position.x)
             
             boxParent.addChild(box)
             
