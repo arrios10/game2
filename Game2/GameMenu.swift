@@ -7,6 +7,7 @@
 
 import SpriteKit
 import Firebase
+import FirebaseAuth
 
 class GameMenu: SKScene {
     
@@ -21,6 +22,7 @@ class GameMenu: SKScene {
     var gameVC: GameViewController!
     
     override func didMove(to view: SKView) {
+        signIn() 
         self.anchorPoint = CGPoint(x: 0.5, y: 0.5)
         startGame = self.childNode(withName: "startGame") as! SKLabelNode
         
@@ -70,5 +72,25 @@ class GameMenu: SKScene {
             }
         }
         
+    }
+    
+    
+    func signIn() {
+        if Auth.auth().currentUser == nil {
+            Task {
+                do {
+                    try await Auth.auth().signInAnonymously()
+                }
+                catch {
+                    print (error.localizedDescription)
+                }
+            }
+        }
+        else {
+            print("Someone is signed in.")
+            if let user = Auth.auth().currentUser {
+                print(user.uid)
+            }
+        }
     }
 }
