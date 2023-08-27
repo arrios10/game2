@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		013018002A849BE9008E9704 /* GameMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013017FF2A849BE9008E9704 /* GameMenu.swift */; };
 		013D41C82A985AEA00964E92 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 013D41C72A985AEA00964E92 /* FirebaseAuth */; };
+		013D41CA2A99751300964E92 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 013D41C92A99751300964E92 /* FirebaseDatabase */; };
+		013D41CC2A99A8A700964E92 /* FirebaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013D41CB2A99A8A700964E92 /* FirebaseManager.swift */; };
 		016F35A72A81DD1000563109 /* GameMenu.sks in Resources */ = {isa = PBXBuildFile; fileRef = 016F35A62A81DD1000563109 /* GameMenu.sks */; };
 		018F379E2A6E245700027BD0 /* Explosion.sks in Resources */ = {isa = PBXBuildFile; fileRef = 018F379D2A6E245700027BD0 /* Explosion.sks */; };
 		0193CA142A69E04A00372040 /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0193CA132A69E04A00372040 /* Helper.swift */; };
@@ -29,6 +31,7 @@
 
 /* Begin PBXFileReference section */
 		013017FF2A849BE9008E9704 /* GameMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameMenu.swift; sourceTree = "<group>"; };
+		013D41CB2A99A8A700964E92 /* FirebaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseManager.swift; sourceTree = "<group>"; };
 		016F35A62A81DD1000563109 /* GameMenu.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameMenu.sks; sourceTree = "<group>"; };
 		018F379D2A6E245700027BD0 /* Explosion.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Explosion.sks; sourceTree = "<group>"; };
 		0193CA132A69E04A00372040 /* Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
@@ -54,6 +57,7 @@
 			files = (
 				01E580BD2A96F26300BCA889 /* FirebaseAnalytics in Frameworks */,
 				013D41C82A985AEA00964E92 /* FirebaseAuth in Frameworks */,
+				013D41CA2A99751300964E92 /* FirebaseDatabase in Frameworks */,
 				01E580C32A97069400BCA889 /* FirebaseCrashlytics in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -87,6 +91,7 @@
 				01A30DD02A68CF0500ADA84D /* AppDelegate.swift */,
 				0193CA132A69E04A00372040 /* Helper.swift */,
 				01A30DD62A68CF0500ADA84D /* GameScene.swift */,
+				013D41CB2A99A8A700964E92 /* FirebaseManager.swift */,
 				01A30DD82A68CF0500ADA84D /* GameViewController.swift */,
 				013017FF2A849BE9008E9704 /* GameMenu.swift */,
 				016F35A62A81DD1000563109 /* GameMenu.sks */,
@@ -129,6 +134,7 @@
 				01E580BC2A96F26300BCA889 /* FirebaseAnalytics */,
 				01E580C22A97069400BCA889 /* FirebaseCrashlytics */,
 				013D41C72A985AEA00964E92 /* FirebaseAuth */,
+				013D41C92A99751300964E92 /* FirebaseDatabase */,
 			);
 			productName = Game2;
 			productReference = 01A30DCD2A68CF0500ADA84D /* Game2.app */;
@@ -221,6 +227,7 @@
 			files = (
 				01A30DD72A68CF0500ADA84D /* GameScene.swift in Sources */,
 				01BCD2462A71DA61005FA071 /* TestPhrases.swift in Sources */,
+				013D41CC2A99A8A700964E92 /* FirebaseManager.swift in Sources */,
 				01A30DD92A68CF0500ADA84D /* GameViewController.swift in Sources */,
 				01A30DD12A68CF0500ADA84D /* AppDelegate.swift in Sources */,
 				013018002A849BE9008E9704 /* GameMenu.swift in Sources */,
@@ -473,6 +480,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 01E580BB2A96F26300BCA889 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseAuth;
+		};
+		013D41C92A99751300964E92 /* FirebaseDatabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 01E580BB2A96F26300BCA889 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDatabase;
 		};
 		01E580BC2A96F26300BCA889 /* FirebaseAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;

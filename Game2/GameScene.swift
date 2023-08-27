@@ -7,6 +7,8 @@
 
 import Foundation
 import SpriteKit
+import Firebase
+import FirebaseDatabase
 
 enum CollisionType: UInt32 {
     case whiteBox = 1
@@ -68,9 +70,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // MARK: - Lifecycle Methods
     override func didMove(to view: SKView) {
         
+        // for test data
+        uploadTestData()
+        
         //
         NotificationCenter.default.addObserver(self, selector: #selector(GameScene.appResignActive), name: UIApplication.willResignActiveNotification, object: nil)
 
+        //
+        FirebaseManager.shared.fetchTestPhrase(wuhbaNumber: 1) { fetchedTestPhrase in
+        if let fetchedTestPhrase = fetchedTestPhrase {
+            // Do something with fetchedTestPhrase
+        } else {
+            // Handle error
+        }
+        }
         
         // Set up the parent node.
         self.addChild(boxParent)
@@ -483,5 +496,46 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         for t in touches { self.touchUp(atPoint: t.location(in: self)) }
         
+    }
+    
+    // for test phrases
+    func uploadTestData() {
+        // Initialize a DatabaseReference
+        let ref = Database.database().reference()
+        
+        // Your test data
+        let testPhrases: [TestPhrases] = [
+            TestPhrases(phrase: "Time is now, or never.", wordList: ["Time", "Is", "Now","Or", "Never"], source: "", notes: "", wordCount: 5, wuhbaNumber: 1),
+            TestPhrases(phrase: "Action is its own reward.", wordList: ["Action", "Is", "Its", "Own", "Reward"], source: "", notes: "", wordCount: 5, wuhbaNumber: 2),
+            TestPhrases(phrase: "As I think, I am.", wordList: ["As", "I", "Think", "I", "Am"], source: "", notes: "", wordCount: 5, wuhbaNumber: 3),
+            TestPhrases(phrase: "Crowded thoughts yield absent minds.", wordList: ["Crowded", "Thoughts", "Yield", "Absent", "Minds"], source: "", notes: "", wordCount: 5, wuhbaNumber: 4),
+            TestPhrases(phrase: "Hard to build, not blast.", wordList: ["Hard", "To", "Build", "Not", "Blast"], source: "", notes: "", wordCount: 5, wuhbaNumber: 5),
+            TestPhrases(phrase: "I think, so I will.", wordList: ["I", "Think", "So", "I", "Will"], source: "", notes: "", wordCount: 5, wuhbaNumber: 6),
+            TestPhrases(phrase: "Kind words unlock iron doors.", wordList: ["Kind", "Words", "Unlock", "Iron", "Doors"], source: "", notes: "", wordCount: 5, wuhbaNumber: 7),
+            TestPhrases(phrase: "Last mile is the longest.", wordList: ["Last", "Mile", "Is", "The", "Longest"], source: "", notes: "", wordCount: 5, wuhbaNumber: 8),
+            TestPhrases(phrase: "Make a long story short.", wordList: ["Make", "A", "Long", "Story", "Short"], source: "", notes: "", wordCount: 5, wuhbaNumber: 9),
+            TestPhrases(phrase: "My habits are my base.", wordList: ["My", "Habits", "Are", "My", "Base"], source: "", notes: "", wordCount: 5, wuhbaNumber: 10),
+            TestPhrases(phrase: "Step by step with ferocity.", wordList: ["Step", "By", "Step", "With", "Ferocity"], source: "", notes: "", wordCount: 5, wuhbaNumber: 11),
+            TestPhrases(phrase: "This phrase is not true.", wordList: ["This", "Phrase", "Is", "Not", "True"], source: "", notes: "", wordCount: 5, wuhbaNumber: 12),
+            TestPhrases(phrase: "Through hardship, to the stars.", wordList: ["Through", "Hardship", "To", "The", "Stars"], source: "", notes: "", wordCount: 5, wuhbaNumber: 13),
+            TestPhrases(phrase: "Time is now, or never.", wordList: ["Time", "Is", "Now", "Or", "Never"], source: "", notes: "", wordCount: 5, wuhbaNumber: 14),
+            TestPhrases(phrase: "Time is the only currency.", wordList: ["Time", "Is", "The", "Only", "Currency"], source: "", notes: "", wordCount: 5, wuhbaNumber: 15),
+            TestPhrases(phrase: "What is above, is below.", wordList: ["What", "Is", "Above", "Is", "Below"], source: "", notes: "", wordCount: 5, wuhbaNumber: 16)        ]
+        
+        for phrase in testPhrases {
+            // Create a Dictionary representation of your object
+            print(phrase)
+            let phraseDict: [String : Any] = [
+                "phrase": phrase.phrase,
+                "wordList": phrase.wordList,
+                "source": phrase.source,
+                "notes": phrase.notes,
+                "wordCount": phrase.wordCount,
+                "wuhbaNumber": phrase.wuhbaNumber
+            ]
+            
+            // Generate a new child location using a unique key and save the Dictionary into it
+            ref.child("testPhrases").child("\(phrase.wuhbaNumber)").setValue(phraseDict)
+        }
     }
 }
