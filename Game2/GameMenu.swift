@@ -37,13 +37,10 @@ class GameMenu: SKScene {
     }
     
     
-    
-    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        
-        for touch in touches{
+        for touch in touches {
             let touchLocation = touch.location(in: self)
-            
+
             if let nodeName = atPoint(touchLocation).name {
                 switch nodeName {
                 case "startGame", "startBox":
@@ -53,26 +50,38 @@ class GameMenu: SKScene {
                         AnalyticsParameterItemName: "StartGame",
                         AnalyticsParameterContentType: "menuOption",
                     ])
-                    
-                    
-                    let gameScene = GameScene(fileNamed: "GameScene")!
-                    gameScene.gameMenu = self
-                    gameScene.scaleMode = .aspectFill
-                    scene?.view?.presentScene(gameScene, transition: .crossFade(withDuration: TimeInterval(0.5)))
-                    
+
+                    let randomIndex = Int(arc4random_uniform(UInt32(16)))
+                    FirebaseManager.shared.fetchTestPhrase(wuhbaNumber: randomIndex) { fetchedTestPhrase in
+                        print("Successfully reached call")
+
+                        if let fetchedTestPhrase = fetchedTestPhrase {
+                            print("Successfully fetched: \(fetchedTestPhrase.phrase)")
+
+                            // Assuming your GameScene has a property called currentPhrase
+                            let gameScene = GameScene(fileNamed: "GameScene")!
+                            gameScene.currentPhrase = fetchedTestPhrase
+                            gameScene.gameMenu = self
+                            gameScene.scaleMode = .aspectFill
+                            self.scene?.view?.presentScene(gameScene, transition: .crossFade(withDuration: TimeInterval(0.5)))
+
+                        } else {
+                            print("Failed to fetch for wuhbaNumber: \(randomIndex)")
+                        }
+                    }
+
                 case "crashTestButton":
                     // Deliberate crash
                     let numbers = [0]
                     let _ = numbers[1]
-                    
+
                 default:
                     break
                 }
-                
             }
         }
-        
     }
+
     
     
     func signIn() {

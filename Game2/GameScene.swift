@@ -41,6 +41,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         TestPhrases(phrase: "What is above, is below.", wordList: ["What", "Is", "Above", "Is", "Below"], source: "", notes: "", wordCount: 5, wuhbaNumber: 16)
     ]
     
+    var currentPhrase: TestPhrases!
+
     
     // nodes
     private var boxParent = SKSpriteNode()
@@ -71,19 +73,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func didMove(to view: SKView) {
         
         // for test data
-        uploadTestData()
+        //uploadTestData()
         
-        //
-        NotificationCenter.default.addObserver(self, selector: #selector(GameScene.appResignActive), name: UIApplication.willResignActiveNotification, object: nil)
+       
+        // random index for test phrases
+        //let randomIndex = Int(arc4random_uniform(UInt32(testPhrases.count)))
 
         //
-        FirebaseManager.shared.fetchTestPhrase(wuhbaNumber: 1) { fetchedTestPhrase in
-        if let fetchedTestPhrase = fetchedTestPhrase {
-            // Do something with fetchedTestPhrase
-        } else {
-            // Handle error
-        }
-        }
+        NotificationCenter.default.addObserver(self, selector: #selector(GameScene.appResignActive), name: UIApplication.willResignActiveNotification, object: nil)
         
         // Set up the parent node.
         self.addChild(boxParent)
@@ -94,20 +91,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         // setup access for gamescene score nodes
         setupScoreBoxes()
-        
-        // random index for test phrases
-        let randomIndex = Int(arc4random_uniform(UInt32(testPhrases.count)))
-        
+     
         // wuhba number label
         numberLabel = self.childNode(withName: "wuhbaNumber") as! SKLabelNode
         numberLabel.isHidden = true
-        numberLabel.text = "Wuhba No. " + String(testPhrases[randomIndex].wuhbaNumber)
+        numberLabel.text = "Wuhba No. " + String(currentPhrase!.wuhbaNumber)
 
-        
+
         // populate data from testPhrase array
-        wordList = testPhrases[randomIndex].wordList
-        answerPhrase = testPhrases[randomIndex].phrase
-        totalBoxes = testPhrases[randomIndex].wordCount
+        wordList = currentPhrase!.wordList
+        answerPhrase = currentPhrase!.phrase
+        totalBoxes = currentPhrase!.wordCount
         
         
         // setup pause/start buttons
@@ -120,7 +114,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // setup the parent box and child boxes
         setupBoxes(totalBoxes: totalBoxes, boxParent: boxParent)
         
-        // game timers
         
         removeItemsTimer = Timer.scheduledTimer(timeInterval: TimeInterval(0.5), target: self, selector: #selector(GameScene.removeItems), userInfo: nil, repeats: true)
         
@@ -387,17 +380,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func spawnFallingBox(size: CGSize) {
+        print("arrays:")
+        print(wordBank)
+        print(wordList)
         
         if wordBank.isEmpty {
             // If it is, repopulate it with the original wordList.
             wordBank = wordList
         }
-        
+                
         let fallingBox = SKShapeNode(rectOf: size)
         
         if let randomWord = wordBank.randomElement(),
            let index = wordBank.firstIndex(of: randomWord) {
             addChild(fallingBox)
+            print(randomWord)
             
             let label = SKLabelNode(text: randomWord)
             label.fontColor = .white
@@ -416,7 +413,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         
         fallingBox.position.x = CGFloat.random(in: -82.0...82.0)
-        fallingBox.position.y = self.frame.maxY + 100
+        fallingBox.position.y = self.frame.maxY + 82
         
         fallingBox.strokeColor = .systemYellow
         fallingBox.lineWidth = 3
@@ -497,6 +494,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         for t in touches { self.touchUp(atPoint: t.location(in: self)) }
         
     }
+    
+ 
+
     
     // for test phrases
     func uploadTestData() {
