@@ -182,7 +182,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func backToMenuWithDelay() {
         // Schedule the scene transition after a delay
-        let delayAction = SKAction.wait(forDuration: 2.0)
+        let delayAction = SKAction.wait(forDuration: 3.0)
         let transitionAction = SKAction.run { [weak self] in
             self?.scene?.view?.presentScene(self!.gameMenu, transition: .crossFade(withDuration: TimeInterval(0.5)))
         }
@@ -200,6 +200,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func endGame() {
+        // Log game completed event to Firebase Analytics
+        Analytics.logEvent("game_completed", parameters: [
+              "final_score": 10-score,  // Replace 'finalScore' with actual variable
+              "wuhba_number": currentPhrase!.wuhbaNumber
+
+          ])
+        gameComplete = true
         wordTimer?.invalidate()
         removeItemsTimer?.invalidate()
         for child in children {
@@ -208,11 +215,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
         }
         
-        // Log game completed event to Firebase Analytics
-        Analytics.logEvent("game_completed", parameters: [
-              "final_score": 10-score,  // Replace 'finalScore' with actual variable
-              "some_other_metric": "some_value"
-          ])
+       
         print("score: ",10-score)
         
         boxParent.removeAllChildren()
@@ -225,11 +228,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         label.position.y = 42
         let fadeAction = SKAction.fadeIn(withDuration: 0.4)
         label.run(fadeAction)
-        boxParent.addChild(label)
+        addChild(label)
         finalScoreBoxes()
         backToMenuWithDelay()
-        gameComplete = true
     }
+
     
     func finalScoreBoxes(){
         for node in scoreSquares {

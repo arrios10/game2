@@ -44,14 +44,13 @@ class GameMenu: SKScene {
             if let nodeName = atPoint(touchLocation).name {
                 switch nodeName {
                 case "startGame", "startBox":
-                    // Log the event to Firebase Analytics
-                    Analytics.logEvent(AnalyticsEventSelectContent, parameters: [
-                        AnalyticsParameterItemID: "id-StartGame",
-                        AnalyticsParameterItemName: "StartGame",
-                        AnalyticsParameterContentType: "menuOption",
-                    ])
 
-                    let randomIndex = Int(arc4random_uniform(UInt32(16)))
+                    let randomIndex = Int(arc4random_uniform(UInt32(15))) + 1
+                    // Log the event to Firebase Analytics
+                    Analytics.logEvent("game_started", parameters: [
+                          "wuhba_number": randomIndex
+                      ])
+                    
                     FirebaseManager.shared.fetchTestPhrase(wuhbaNumber: randomIndex) { fetchedTestPhrase in
                         print("Successfully reached call")
 
