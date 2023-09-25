@@ -234,58 +234,28 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
 
     
-    func finalScoreBoxes(){
+    func finalScoreBoxes() {
+        let baseX = self.frame.midX
+        let baseY = self.frame.midY - 42
+        let duration = 0.35
+        let initialOffset: CGFloat = 180
+        let stepOffset: CGFloat = 40
+
         for node in scoreSquares {
-            // Do something with each shape node, for example, change the stroke color
-            
-            if let nodeName = node.name, let nodeNumber = Int(nodeName) {
-                // The conversion was successful and nodeNumber now holds the integer value
-                switch nodeNumber {
-                case 1:
-                    let moveAction = SKAction.move(to: CGPoint(x: self.frame.midX + 180, y: self.frame.midY - 42), duration: 0.21)
-                    node.run(moveAction)
-                case 2:
-                    let moveAction = SKAction.move(to: CGPoint(x: self.frame.midX + 140, y: self.frame.midY - 42), duration: 0.21)
-                    node.run(moveAction)
-                    
-                case 3:
-                    let moveAction = SKAction.move(to: CGPoint(x: self.frame.midX + 100, y: self.frame.midY - 42), duration: 0.21)
-                    node.run(moveAction)
-                    
-                case 4:
-                    let moveAction = SKAction.move(to: CGPoint(x: self.frame.midX + 60, y: self.frame.midY - 42), duration: 0.21)
-                    node.run(moveAction)
-                    
-                case 5:
-                    let moveAction = SKAction.move(to: CGPoint(x: self.frame.midX + 20, y: self.frame.midY - 42), duration: 0.21)
-                    node.run(moveAction)
-                    
-                case 6:
-                    let moveAction = SKAction.move(to: CGPoint(x: self.frame.midX - 20, y: self.frame.midY - 42), duration: 0.21)
-                    node.run(moveAction)
-                    
-                case 7:
-                    let moveAction = SKAction.move(to: CGPoint(x: self.frame.midX - 60, y: self.frame.midY - 42), duration: 0.21)
-                    node.run(moveAction)
-                case 8:
-                    let moveAction = SKAction.move(to: CGPoint(x: self.frame.midX - 100, y: self.frame.midY - 42), duration: 0.21)
-                    node.run(moveAction)
-                    
-                case 9:
-                    let moveAction = SKAction.move(to: CGPoint(x: self.frame.midX - 140, y: self.frame.midY - 42), duration: 0.21)
-                    node.run(moveAction)
-                    
-                case 10:
-                    let moveAction = SKAction.move(to: CGPoint(x: self.frame.midX - 180, y: self.frame.midY - 42), duration: 0.21)
-                    node.run(moveAction)
-                    
-                default:
-                    print("default hit")
-                }
+            if let nodeName = node.name, let nodeNumber = Int(nodeName), nodeNumber >= 1 && nodeNumber <= 10 {
+                // For nodes 1 to 5, we move right from the midpoint
+                // For nodes 6 to 10, we move left from the midpoint
+                let moveX = baseX + (initialOffset - ((CGFloat(nodeNumber)-1) * stepOffset))
+                let moveAction = SKAction.move(to: CGPoint(x: moveX, y: baseY), duration: duration)
+                node.run(moveAction)
+            } else {
+                print("Unrecognized node name or out of range: \(node.name ?? "nil")")
             }
         }
         numberLabel.isHidden = false
     }
+    
+   
     
     func setupScoreBoxes(){
         // access gamescene score nodes
