@@ -24,6 +24,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var answerPhrase: String = ""
     var stopEverything = false
     var gameComplete = false
+    var gameSeconds: Int = 0
 
     
     var moveBoxAction: SKAction!
@@ -88,7 +89,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         setupBoxes(totalBoxes: totalBoxes, boxParent: boxParent)
         
         //run timers
-        removeItemsTimer = Timer.scheduledTimer(timeInterval: TimeInterval(0.5), target: self, selector: #selector(GameScene.removeItems), userInfo: nil, repeats: true)
+        removeItemsTimer = Timer.scheduledTimer(timeInterval: TimeInterval(1.0), target: self, selector: #selector(GameScene.removeItems), userInfo: nil, repeats: true)
         wordTimer = Timer.scheduledTimer(timeInterval: TimeInterval(Helper().randomBetweenTwoNumbers(firstNumber: 1.3, secondNumber: 1.5)), target: self, selector: #selector(GameScene.createWordStream), userInfo: nil, repeats: true)
     }
     
@@ -203,6 +204,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // Log game completed event to Firebase Analytics
         Analytics.logEvent("game_completed", parameters: [
               "final_score": 10-score,  // Replace 'finalScore' with actual variable
+              "game_seconds": gameSeconds, 
               "wuhba_number": currentPhrase!.wuhbaNumber
 
           ])
@@ -237,11 +239,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func finalScoreBoxes() {
         let baseX = self.frame.midX
         let baseY = self.frame.midY - 42
-        let duration = 0.35
+        let duration = 0.42
         let initialOffset: CGFloat = 180
         let stepOffset: CGFloat = 40
 
-        for node in scoreSquares {
+        for node in scoreSquares.reversed() {
             if let nodeName = node.name, let nodeNumber = Int(nodeName), nodeNumber >= 1 && nodeNumber <= 10 {
                 // For nodes 1 to 5, we move right from the midpoint
                 // For nodes 6 to 10, we move left from the midpoint
@@ -353,6 +355,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     @objc func removeItems(){
+        gameSeconds += 1
         for child in children{
             if child.position.y < -self.size.height - 100{
                 child.removeFromParent()
