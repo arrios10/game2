@@ -17,6 +17,13 @@ enum CollisionType: UInt32 {
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
+    
+    var explosionTexture: SKTexture?
+    var explosionEmitter: SKEmitterNode?
+    
+    var explosion2Texture: SKTexture?
+    var explosion2Emitter: SKEmitterNode?
+    
     var gameMenu: GameMenu!
     var currentPhrase: TestPhrases!
     var totalBoxes: Int = 0
@@ -47,6 +54,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     // MARK: - Lifecycle Methods
     override func didMove(to view: SKView) {
+        
+        // Preload textures
+          explosionTexture = SKTexture(imageNamed: "spark")
+        explosion2Texture = SKTexture(imageNamed: "bar")
+
+          // Preload emitters
+          if let emitter = SKEmitterNode(fileNamed: "Explosion") {
+              explosionEmitter = emitter
+          }
+        
+        if let emitter = SKEmitterNode(fileNamed: "Explosion2") {
+            explosion2Emitter = emitter
+        }
   
         // set up physics world
         physicsWorld.contactDelegate = self
@@ -171,14 +191,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func animateBoxImpact(fallingBox: SKNode) {
-        if let explosion = SKEmitterNode(fileNamed: "Explosion") {
-            explosion.position = fallingBox.position
-            addChild(explosion)
-        }
-        if let explosion = SKEmitterNode(fileNamed: "Explosion2") {
-            explosion.position = fallingBox.position
-            addChild(explosion)
-        }
+        if let explosion = explosionEmitter?.copy() as? SKEmitterNode {
+              explosion.position = fallingBox.position
+              addChild(explosion)
+          }
+        
+        if let explosion2 = explosion2Emitter?.copy() as? SKEmitterNode {
+              explosion2.position = fallingBox.position
+              addChild(explosion2)
+          }
     }
     
     func backToMenuWithDelay() {

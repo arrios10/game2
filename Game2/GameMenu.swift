@@ -23,6 +23,7 @@ class GameMenu: SKScene {
     
     override func didMove(to view: SKView) {
         signIn() 
+
         self.anchorPoint = CGPoint(x: 0.5, y: 0.5)
         startGame = self.childNode(withName: "startGame") as! SKLabelNode
         
