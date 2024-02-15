@@ -20,7 +20,7 @@ class FallingBoxManager {
     let gameFrame:CGRect
     var wordBank: [String]
     var wordList: [String]  // Added wordList property
-
+    
     
     
     init(gameFrame: CGRect, totalBoxes: Int,wordBank: [String],wordList: [String]) {
@@ -32,7 +32,7 @@ class FallingBoxManager {
         // Preload textures
         self.explosionTexture = SKTexture(imageNamed: "spark")
         self.explosion2Texture = SKTexture(imageNamed: "bar")
-
+        
         // Preload emitters
         if let emitter = SKEmitterNode(fileNamed: "Explosion") {
             self.explosionEmitter = emitter
@@ -41,20 +41,20 @@ class FallingBoxManager {
         if let emitter = SKEmitterNode(fileNamed: "Explosion2") {
             self.explosion2Emitter = emitter
         }
-
-       }
+        
+    }
     
     
     func animateBoxImpact(parentNode: SKNode,fallingBox: SKNode) {
         if let explosion = explosionEmitter?.copy() as? SKEmitterNode {
-              explosion.position = fallingBox.position
+            explosion.position = fallingBox.position
             parentNode.addChild(explosion)
-          }
+        }
         
         if let explosion2 = explosion2Emitter?.copy() as? SKEmitterNode {
-              explosion2.position = fallingBox.position
+            explosion2.position = fallingBox.position
             parentNode.addChild(explosion2)
-          }
+        }
     }
     
     
@@ -101,6 +101,6 @@ class FallingBoxManager {
         fallingBox.physicsBody?.collisionBitMask = CollisionType.wordBox.rawValue
         fallingBox.physicsBody?.contactTestBitMask = CollisionType.wordBox.rawValue
     }
-
+    
     
 }

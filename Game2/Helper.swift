@@ -22,8 +22,11 @@ class Settings {
         
     }
     
-    var highScore = 0
+    var highScore: Int = 0
     let highScoreKey = "highScore"
+    
+    var userID = ""
+    let userKey = "userID"
     
     func saveHighScore(_ value: Int) {
         UserDefaults.standard.set(value, forKey: highScoreKey)
@@ -33,4 +36,5 @@ class Settings {
     func getHighScore() -> Int {
         return UserDefaults.standard.integer(forKey: highScoreKey)
     }
+
 }

@@ -2,8 +2,7 @@
 //  GameScene.swift
 //  Game2
 //
-//  Created by Andrew Rios on 7/19/23.
-//
+//  Created by Andrew Rios on 7/19/23
 
 import Foundation
 import SpriteKit
@@ -17,13 +16,12 @@ enum CollisionType: UInt32 {
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
-    
-    var explosionTexture: SKTexture?
-    var explosionEmitter: SKEmitterNode?
-    
-    var explosion2Texture: SKTexture?
-    var explosion2Emitter: SKEmitterNode?
-    
+    var gameSettings = Settings.sharedInstance
+
+    //box managers
+    var fallingBoxManager: FallingBoxManager!
+    var boxManager: BoxManager!
+
     var gameMenu: GameMenu!
     var currentPhrase: TestPhrases!
     var totalBoxes: Int = 0
@@ -32,8 +30,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var stopEverything = false
     var gameComplete = false
     var gameSeconds: Int = 0
-
-    
     var moveBoxAction: SKAction!
     
     //nodes
@@ -43,6 +39,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var pauseButton = SKShapeNode()
     var pauseButton2 = SKShapeNode()
     var numberLabel = SKLabelNode()
+    var scoreLabel = SKLabelNode()
+
     
     // timers
     private weak var wordTimer: Timer?
@@ -54,20 +52,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     // MARK: - Lifecycle Methods
     override func didMove(to view: SKView) {
-        
-        // Preload textures
-          explosionTexture = SKTexture(imageNamed: "spark")
-        explosion2Texture = SKTexture(imageNamed: "bar")
+        scoreLabel = self.childNode(withName: "scoreLabel") as! SKLabelNode
 
-          // Preload emitters
-          if let emitter = SKEmitterNode(fileNamed: "Explosion") {
-              explosionEmitter = emitter
-          }
-        
-        if let emitter = SKEmitterNode(fileNamed: "Explosion2") {
-            explosion2Emitter = emitter
-        }
-  
         // set up physics world
         physicsWorld.contactDelegate = self
         physicsWorld.gravity = CGVector(dx: 0, dy: -3.14)
@@ -99,14 +85,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         answerPhrase = currentPhrase!.phrase
         totalBoxes = currentPhrase!.wordCount
         
-        // setup pause/start buttons
-        pauseButton = self.childNode(withName: "pausebar") as! SKShapeNode
-        pauseButton2 = self.childNode(withName: "pausebar2") as! SKShapeNode
-        pauseButton.alpha = 0.0
-        pauseButton2.alpha = 0.0
-        
         // setup the parent box and child boxes
-        setupBoxes(totalBoxes: totalBoxes, boxParent: boxParent)
+        boxManager = BoxManager(gameFrame: self.frame, boxParent: boxParent, totalBoxes: totalBoxes, wordList: currentPhrase!.wordList)
+        //setupBoxes(totalBoxes: totalBoxes, boxParent: boxParent)
+        boxManager.setupBoxes()
+        
+        fallingBoxManager = FallingBoxManager(gameFrame: self.frame, totalBoxes: totalBoxes, wordBank: wordBank, wordList: wordList)
+
         
         //run timers
         removeItemsTimer = Timer.scheduledTimer(timeInterval: TimeInterval(1.0), target: self, selector: #selector(GameScene.removeItems), userInfo: nil, repeats: true)
@@ -114,6 +99,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     override public func willMove(from view: SKView) {
+        
+
         self.removeAllChildren()
         self.removeAllActions()
     }
@@ -130,6 +117,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     @objc func appResignActive() {
+        print("*** resign active ***")
         physicsWorld.gravity.dy = 0
         wordTimer?.invalidate()
         removeItemsTimer?.invalidate()
@@ -150,15 +138,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     if wordBox.name == fallingBox.name {
                         
                         // add the falling box word to the white word box
-                        addWordToBox(wordBox: wordBox, fallingBox: fallingBox)
+                        self.boxManager.addWordToBox(wordBox: wordBox, fallingBox: fallingBox)
                         fallingBox.removeFromParent()
-                        if let index = wordList.firstIndex(of: wordBox.name!) {
-                            wordList.remove(at: index)
+                        if let index = fallingBoxManager.wordList.firstIndex(of: wordBox.name!) {
+                            fallingBoxManager.wordList.remove(at: index)
                         }
                         wordBox.name = nil
                     } else{
                         // blow up box effects on impact
-                        animateBoxImpact(fallingBox: fallingBox)
+                        fallingBoxManager.animateBoxImpact(parentNode: self, fallingBox: fallingBox)
                         
                         if score == 9 {
                             score += 1
@@ -173,7 +161,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
         }
     }
-    
     
     // MARK: - Game Methods
     func addWordToBox(wordBox: SKShapeNode, fallingBox: SKNode) {
@@ -190,45 +177,52 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         wordBox.fillColor = UIColor.white
     }
     
-    func animateBoxImpact(fallingBox: SKNode) {
-        if let explosion = explosionEmitter?.copy() as? SKEmitterNode {
-              explosion.position = fallingBox.position
-              addChild(explosion)
-          }
-        
-        if let explosion2 = explosion2Emitter?.copy() as? SKEmitterNode {
-              explosion2.position = fallingBox.position
-              addChild(explosion2)
-          }
-    }
-    
     func backToMenuWithDelay() {
         // Schedule the scene transition after a delay
         let delayAction = SKAction.wait(forDuration: 3.0)
         let transitionAction = SKAction.run { [weak self] in
-            self?.scene?.view?.presentScene(self!.gameMenu, transition: .crossFade(withDuration: TimeInterval(0.5)))
+            // Make sure self is still around and gameMenu is not nil
+            guard let strongSelf = self, let gameMenu = strongSelf.gameMenu else {
+                print("Self or gameMenu is nil, cannot transition")
+                return
+            }
+           gameMenu.updateScoreBoxes()  // Update the score boxes
+
+            // Ensure that the transition only occurs if the view is still available
+            if let view = strongSelf.scene?.view {
+                view.presentScene(gameMenu, transition: .crossFade(withDuration: 0.5))
+            }
         }
         run(SKAction.sequence([delayAction, transitionAction]))
     }
+
     
     @objc func createWordStream() {
-        if wordList.count == 0 {
+        if fallingBoxManager.wordList.count == 0 {
             stopEverything = true
         }
         if stopEverything == false {
             let size = CGSize(width: ((self.frame.width * 0.8) + 10) / (CGFloat(totalBoxes)), height: 122)
-            spawnFallingBox(size: size)
+            fallingBoxManager.spawnFallingBox(parentNode: self, size: size)
         }
     }
     
     func endGame() {
+        
+        let finalScore = 10-score
+        
+        if gameSettings.getHighScore() < finalScore {
+                    gameSettings.saveHighScore(finalScore)
+            print(gameSettings.getHighScore())
+                }
         // Log game completed event to Firebase Analytics
         Analytics.logEvent("game_completed", parameters: [
-              "final_score": 10-score,  // Replace 'finalScore' with actual variable
-              "game_seconds": gameSeconds, 
+              "final_score": finalScore,  // Replace 'finalScore' with actual variable
+              "game_seconds": gameSeconds,
               "wuhba_number": currentPhrase!.wuhbaNumber
 
           ])
+        
         gameComplete = true
         wordTimer?.invalidate()
         removeItemsTimer?.invalidate()
@@ -237,9 +231,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 child.removeFromParent()
             }
         }
-        
-       
-        print("score: ",10-score)
         
         boxParent.removeAllChildren()
         boxParent.color = .white
@@ -259,7 +250,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func finalScoreBoxes() {
         let baseX = self.frame.midX
-        let baseY = self.frame.midY - 42
+        let baseY = 150.0
         let duration = 0.42
         let initialOffset: CGFloat = 180
         let stepOffset: CGFloat = 40
@@ -276,9 +267,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
         }
         numberLabel.isHidden = false
+        scoreLabel.isHidden = false
     }
-    
-   
     
     func setupScoreBoxes(){
         // access gamescene score nodes
@@ -288,92 +278,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
         }
     }
-    
-    func setupBoxes(totalBoxes: Int, boxParent: SKSpriteNode) {
-        // setup word box width
-        let boxWidth: CGFloat = ((self.frame.width * 0.8) + 10) / (CGFloat(totalBoxes))
-        
-        // setup word boxes
-        for i in 0..<totalBoxes {
-            // create word box
-            let box = SKShapeNode(rectOf: CGSize(width: boxWidth, height: 122))
-            
-            // calculate word box size
-            let size = CGSize(width: box.frame.width / 2 , height: box.frame.height)
-            
-            // box properties
-            box.strokeColor = .white
-            box.lineWidth = 8
-            box.position.x = boxPositions[i]
-            boxParent.addChild(box)
-            
-            // box physics properties
-            box.physicsBody = SKPhysicsBody(rectangleOf: size)
-            box.physicsBody?.affectedByGravity = false
-            box.physicsBody?.isDynamic = false
-            box.physicsBody?.categoryBitMask = CollisionType.wordBox.rawValue
-            box.physicsBody?.collisionBitMask = CollisionType.fallingBox.rawValue
-            box.physicsBody?.contactTestBitMask = CollisionType.fallingBox.rawValue
-            
-            // set box name to current word
-            box.name = wordList[i]
-        }
-        
-        // set parent box properties
-        let totalWidth: CGFloat = CGFloat(totalBoxes) * boxWidth + CGFloat(totalBoxes - 1)
-        boxParent.position = CGPoint(x: self.frame.midX, y: self.frame.minY + 250)
-        boxParent.size.width = totalWidth
-        boxParent.color = .white
-        
-    }
-    
-    func spawnFallingBox(size: CGSize) {
-        print("arrays:")
-        print(wordBank)
-        print(wordList)
-        
-        if wordBank.isEmpty {
-            // If it is, repopulate it with the original wordList.
-            wordBank = wordList
-        }
-        
-        let fallingBox = SKShapeNode(rectOf: size)
-        
-        if let randomWord = wordBank.randomElement(),
-           let index = wordBank.firstIndex(of: randomWord) {
-            addChild(fallingBox)
-            print(randomWord)
-            
-            let label = SKLabelNode(text: randomWord)
-            label.fontColor = .white
-            label.fontSize = 25
-            label.fontName = "AvenirNext-Bold"
-            label.position = CGPoint(x: fallingBox.position.x, y: -10)
-            
-            fallingBox.addChild(label)
-            fallingBox.name = randomWord
-            
-            fallingBox.userData = [
-                "word": randomWord,
-                "index": index,
-            ]
-            wordBank.remove(at: index)
-        }
-        
-        fallingBox.position.x = CGFloat.random(in: -82.0...82.0)
-        fallingBox.position.y = self.frame.maxY + 82
-        fallingBox.strokeColor = .systemYellow
-        fallingBox.lineWidth = 3
-        
-        let boxSize = CGSize(width: fallingBox.frame.width - 20 , height: fallingBox.frame.height)
-        
-        // fallingbox physics
-        fallingBox.physicsBody = SKPhysicsBody(rectangleOf: boxSize)
-        fallingBox.physicsBody?.linearDamping = 0.5
-        fallingBox.physicsBody?.categoryBitMask = CollisionType.fallingBox.rawValue
-        fallingBox.physicsBody?.collisionBitMask = CollisionType.wordBox.rawValue
-        fallingBox.physicsBody?.contactTestBitMask = CollisionType.wordBox.rawValue
-    }
+//
     
     @objc func removeItems(){
         gameSeconds += 1
@@ -429,9 +334,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         for t in touches { self.touchUp(atPoint: t.location(in: self)) }
     }
-    
-    
-    
     
     // for test phrases
     func uploadTestData() {

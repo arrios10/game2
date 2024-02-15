@@ -32,6 +32,8 @@
 		01F044D82ABC9C4700472FDE /* FirebaseAnalyticsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 01F044D72ABC9C4700472FDE /* FirebaseAnalyticsSwift */; };
 		01F044DA2ABC9C4700472FDE /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 01F044D92ABC9C4700472FDE /* FirebaseAnalyticsWithoutAdIdSupport */; };
 		01F044DC2ABC9C4700472FDE /* FirebaseAppCheck in Frameworks */ = {isa = PBXBuildFile; productRef = 01F044DB2ABC9C4700472FDE /* FirebaseAppCheck */; };
+		01F7953A2AE4D4080053688E /* BoxManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F795392AE4D4080053688E /* BoxManager.swift */; };
+		01F7953C2AE5A0CA0053688E /* FallingBoxManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F7953B2AE5A0CA0053688E /* FallingBoxManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -53,6 +55,8 @@
 		01BCD2452A71DA61005FA071 /* TestPhrases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestPhrases.swift; sourceTree = "<group>"; };
 		01C2E2682A854AE300EB1ED2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		01E580B92A96F19B00BCA889 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		01F795392AE4D4080053688E /* BoxManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoxManager.swift; sourceTree = "<group>"; };
+		01F7953B2AE5A0CA0053688E /* FallingBoxManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FallingBoxManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,15 +101,17 @@
 			isa = PBXGroup;
 			children = (
 				01C2E2682A854AE300EB1ED2 /* Info.plist */,
+				013017FF2A849BE9008E9704 /* GameMenu.swift */,
+				016F35A62A81DD1000563109 /* GameMenu.sks */,
+				01A30DD62A68CF0500ADA84D /* GameScene.swift */,
+				01A30DD22A68CF0500ADA84D /* GameScene.sks */,
 				01BCD2452A71DA61005FA071 /* TestPhrases.swift */,
 				01A30DD02A68CF0500ADA84D /* AppDelegate.swift */,
 				0193CA132A69E04A00372040 /* Helper.swift */,
-				01A30DD62A68CF0500ADA84D /* GameScene.swift */,
+				01F795392AE4D4080053688E /* BoxManager.swift */,
+				01F7953B2AE5A0CA0053688E /* FallingBoxManager.swift */,
 				013D41CB2A99A8A700964E92 /* FirebaseManager.swift */,
 				01A30DD82A68CF0500ADA84D /* GameViewController.swift */,
-				013017FF2A849BE9008E9704 /* GameMenu.swift */,
-				016F35A62A81DD1000563109 /* GameMenu.sks */,
-				01A30DD22A68CF0500ADA84D /* GameScene.sks */,
 				01A30DDA2A68CF0500ADA84D /* Main.storyboard */,
 				01A30DDD2A68CF0700ADA84D /* Assets.xcassets */,
 				01A30DDF2A68CF0700ADA84D /* LaunchScreen.storyboard */,
@@ -247,6 +253,8 @@
 				01A30DD12A68CF0500ADA84D /* AppDelegate.swift in Sources */,
 				013018002A849BE9008E9704 /* GameMenu.swift in Sources */,
 				0193CA142A69E04A00372040 /* Helper.swift in Sources */,
+				01F7953A2AE4D4080053688E /* BoxManager.swift in Sources */,
+				01F7953C2AE5A0CA0053688E /* FallingBoxManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

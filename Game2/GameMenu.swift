@@ -11,30 +11,35 @@ import FirebaseAuth
 
 class GameMenu: SKScene {
     
+    var scoreSquares: [SKShapeNode] = []
+    var graySquares: [SKShapeNode] = []
+
+    var score: Int = 0
+
     var crashTestButton: SKLabelNode!
-    
     private var boxParent = SKSpriteNode()
-    
     var startGame = SKLabelNode()
     var startBox = SKShapeNode()
-    
-    //var gameSettings = Settings.sharedInstance
+    var gameSettings = Settings.sharedInstance
     var gameVC: GameViewController!
     
     override func didMove(to view: SKView) {
-        signIn() 
+        score = gameSettings.getHighScore()
+        signIn()
+        print("did move")
+        setupScoreBoxes()
 
         self.anchorPoint = CGPoint(x: 0.5, y: 0.5)
         startGame = self.childNode(withName: "startGame") as! SKLabelNode
         
-        // Initialize crashTestButton
-        crashTestButton = SKLabelNode(fontNamed: "Avenir")
-        crashTestButton.text = "Test Crash"
-        crashTestButton.fontSize = 20
-        crashTestButton.fontColor = .red
-        crashTestButton.position = CGPoint(x: 0, y: -50) // Adjust this position as needed
-        crashTestButton.name = "crashTestButton"
-        addChild(crashTestButton)
+//        // Initialize crashTestButton
+//        crashTestButton = SKLabelNode(fontNamed: "Avenir")
+//        crashTestButton.text = "Test Crash"
+//        crashTestButton.fontSize = 20
+//        crashTestButton.fontColor = .red
+//        crashTestButton.position = CGPoint(x: 0, y: -50) // Adjust this position as needed
+//        crashTestButton.name = "crashTestButton"
+//        addChild(crashTestButton)
     }
     
     
@@ -45,7 +50,7 @@ class GameMenu: SKScene {
             if let nodeName = atPoint(touchLocation).name {
                 switch nodeName {
                 case "startGame", "startBox":
-
+                    
                     let randomIndex = Int(arc4random_uniform(UInt32(15))) + 1
                     // Log the event to Firebase Analytics
                     Analytics.logEvent("game_started", parameters: [
@@ -81,8 +86,6 @@ class GameMenu: SKScene {
             }
         }
     }
-
-    
     
     func signIn() {
         if Auth.auth().currentUser == nil {
@@ -98,8 +101,37 @@ class GameMenu: SKScene {
         else {
             print("Someone is signed in.")
             if let user = Auth.auth().currentUser {
-                print(user.uid)
+                print("user: " + user.uid)
             }
         }
     }
+    
+    func setupScoreBoxes(){
+        // access gamescene score nodes
+        for i in 1...10 {
+            if let square = self.childNode(withName: "\(i)") as? SKShapeNode {
+                scoreSquares.append(square)
+            }
+        }
+        updateScoreBoxes()
+
+    }
+    
+    func updateScoreBoxes(){
+        resetScoreBoxes()
+        for i in stride(from: 0, to: 10-score, by: 1) {
+            let element = scoreSquares[i]
+            element.alpha = 0
+        }
+    }
+    
+    func resetScoreBoxes(){
+        for square in scoreSquares{
+            square.alpha = 1
+        }
+    }
+
+    
+
+    
 }
