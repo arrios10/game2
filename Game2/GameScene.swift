@@ -34,6 +34,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     //nodes
     private var boxParent = SKSpriteNode()
+    private var spout1 = SKShapeNode()
+    private var spout2 = SKShapeNode()
+
     var scoreSquares: [SKShapeNode] = []
     let boxPositions: [CGFloat] = [-244.0,-122.0,0.0,122.0,244.0]
     var pauseButton = SKShapeNode()
@@ -53,6 +56,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // MARK: - Lifecycle Methods
     override func didMove(to view: SKView) {
         scoreLabel = self.childNode(withName: "scoreLabel") as! SKLabelNode
+        spout1 = self.childNode(withName: "spout1") as! SKShapeNode
+        spout2 = self.childNode(withName: "spout2") as! SKShapeNode
+
 
         // set up physics world
         physicsWorld.contactDelegate = self
@@ -99,7 +105,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     override public func willMove(from view: SKView) {
-        
 
         self.removeAllChildren()
         self.removeAllActions()
@@ -177,6 +182,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         wordBox.fillColor = UIColor.white
     }
     
+    
+    func backToMenu(){
+        
+    }
+    
     func backToMenuWithDelay() {
         // Schedule the scene transition after a delay
         let delayAction = SKAction.wait(forDuration: 3.0)
@@ -210,6 +220,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func endGame() {
         
         let finalScore = 10-score
+        
+        spout1.isHidden = true
+        spout2.isHidden = true
         
         if gameSettings.getHighScore() < finalScore {
                     gameSettings.saveHighScore(finalScore)
@@ -335,44 +348,5 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         for t in touches { self.touchUp(atPoint: t.location(in: self)) }
     }
     
-    // for test phrases
-    func uploadTestData() {
-        // Initialize a DatabaseReference
-        let ref = Database.database().reference()
-        
-        // Your test data
-        let testPhrases: [TestPhrases] = [
-            TestPhrases(phrase: "Time is now, or never.", wordList: ["Time", "Is", "Now","Or", "Never"], source: "", notes: "", wordCount: 5, wuhbaNumber: 1),
-            TestPhrases(phrase: "Action is its own reward.", wordList: ["Action", "Is", "Its", "Own", "Reward"], source: "", notes: "", wordCount: 5, wuhbaNumber: 2),
-            TestPhrases(phrase: "As I think, I am.", wordList: ["As", "I", "Think", "I", "Am"], source: "", notes: "", wordCount: 5, wuhbaNumber: 3),
-            TestPhrases(phrase: "Crowded thoughts yield absent minds.", wordList: ["Crowded", "Thoughts", "Yield", "Absent", "Minds"], source: "", notes: "", wordCount: 5, wuhbaNumber: 4),
-            TestPhrases(phrase: "Hard to build, not blast.", wordList: ["Hard", "To", "Build", "Not", "Blast"], source: "", notes: "", wordCount: 5, wuhbaNumber: 5),
-            TestPhrases(phrase: "I think, so I will.", wordList: ["I", "Think", "So", "I", "Will"], source: "", notes: "", wordCount: 5, wuhbaNumber: 6),
-            TestPhrases(phrase: "Kind words unlock iron doors.", wordList: ["Kind", "Words", "Unlock", "Iron", "Doors"], source: "", notes: "", wordCount: 5, wuhbaNumber: 7),
-            TestPhrases(phrase: "Last mile is the longest.", wordList: ["Last", "Mile", "Is", "The", "Longest"], source: "", notes: "", wordCount: 5, wuhbaNumber: 8),
-            TestPhrases(phrase: "Make a long story short.", wordList: ["Make", "A", "Long", "Story", "Short"], source: "", notes: "", wordCount: 5, wuhbaNumber: 9),
-            TestPhrases(phrase: "My habits are my base.", wordList: ["My", "Habits", "Are", "My", "Base"], source: "", notes: "", wordCount: 5, wuhbaNumber: 10),
-            TestPhrases(phrase: "Step by step with ferocity.", wordList: ["Step", "By", "Step", "With", "Ferocity"], source: "", notes: "", wordCount: 5, wuhbaNumber: 11),
-            TestPhrases(phrase: "This phrase is not true.", wordList: ["This", "Phrase", "Is", "Not", "True"], source: "", notes: "", wordCount: 5, wuhbaNumber: 12),
-            TestPhrases(phrase: "Through hardship, to the stars.", wordList: ["Through", "Hardship", "To", "The", "Stars"], source: "", notes: "", wordCount: 5, wuhbaNumber: 13),
-            TestPhrases(phrase: "Time is now, or never.", wordList: ["Time", "Is", "Now", "Or", "Never"], source: "", notes: "", wordCount: 5, wuhbaNumber: 14),
-            TestPhrases(phrase: "Time is the only currency.", wordList: ["Time", "Is", "The", "Only", "Currency"], source: "", notes: "", wordCount: 5, wuhbaNumber: 15),
-            TestPhrases(phrase: "What is above, is below.", wordList: ["What", "Is", "Above", "Is", "Below"], source: "", notes: "", wordCount: 5, wuhbaNumber: 16)        ]
-        
-        for phrase in testPhrases {
-            // Create a Dictionary representation of your object
-            print(phrase)
-            let phraseDict: [String : Any] = [
-                "phrase": phrase.phrase,
-                "wordList": phrase.wordList,
-                "source": phrase.source,
-                "notes": phrase.notes,
-                "wordCount": phrase.wordCount,
-                "wuhbaNumber": phrase.wuhbaNumber
-            ]
-            
-            // Generate a new child location using a unique key and save the Dictionary into it
-            ref.child("testPhrases").child("\(phrase.wuhbaNumber)").setValue(phraseDict)
-        }
-    }
+    
 }

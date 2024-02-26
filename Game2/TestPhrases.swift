@@ -14,6 +14,7 @@ struct TestPhrases {
     let notes: String
     let wordCount: Int
     let wuhbaNumber: Int
+    let date: String
 }
 
 

@@ -88,7 +88,7 @@ class FallingBoxManager {
         }
         
         fallingBox.position.x = CGFloat.random(in: -82.0...82.0)
-        fallingBox.position.y = gameFrame.maxY + 82
+        fallingBox.position.y = gameFrame.maxY + 50
         fallingBox.strokeColor = .systemYellow
         fallingBox.lineWidth = 3
         
