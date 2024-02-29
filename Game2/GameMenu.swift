@@ -1,7 +1,6 @@
 //
 //  GameMenu.swift
 //  Game2
-//
 //  Created by Andrew Rios on 8/10/23.
 //
 
@@ -15,9 +14,10 @@ private enum Constants {
     static let initialZRotation: CGFloat = -CGFloat.pi / 2
 }
 
-
 class GameMenu: SKScene {
     
+    weak var viewController: GameViewController?
+
     var prefetchedTestPhrase: TestPhrases?
     
     var scoreSquares: [SKShapeNode] = []
@@ -36,6 +36,10 @@ class GameMenu: SKScene {
     
     
     override func didMove(to view: SKView) {
+        // Listen for the app returning to the foreground
+        NotificationCenter.default.addObserver(self, selector: #selector(appDidBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
+
+
         setupStartBox()
         score = gameSettings.getHighScore()
         setupScoreBoxes()
@@ -71,16 +75,23 @@ class GameMenu: SKScene {
                             "date": fetchedTestPhrase.date
                         ])
                         // Assuming your GameScene has a property called currentPhrase
-                        let gameScene = GameScene(fileNamed: "GameScene")!
-                        gameScene.currentPhrase = fetchedTestPhrase
-                        gameScene.gameMenu = self
-                        gameScene.scaleMode = .aspectFill
-                        self.scene?.view?.presentScene(gameScene, transition: .crossFade(withDuration: TimeInterval(0.5)))
+                        if let gameScene = GameScene(fileNamed: "GameScene") {
+                            gameScene.currentPhrase = fetchedTestPhrase
+                            gameScene.gameMenu = self
+                            gameScene.gameDelegate = viewController
+                            gameScene.scaleMode = .aspectFill
+                            self.scene?.view?.presentScene(gameScene, transition: .crossFade(withDuration: TimeInterval(0.5)))
+                        }
+                       
                         
                     } else {
                         self.prefetchDataForCurrentDate()
                     }
                     
+                
+                case "highScore":
+                    //gameDelegate?.shareScore(score: gameSettings.getHighScore())
+                    print("fix later")
                     
                 case "crashTestButton":
                     // Deliberate crash
@@ -92,6 +103,22 @@ class GameMenu: SKScene {
                 }
             }
         }
+    }
+    
+    @objc func appDidBecomeActive() {
+        // Check if the current date is different from the date of the prefetched phrase
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let currentDate = dateFormatter.string(from: Date())
+
+        if prefetchedTestPhrase?.date != currentDate {
+            // Date has changed, fetch the new phrase
+            prefetchDataForCurrentDate()
+        }
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     
     func prefetchDataForCurrentDate() {
@@ -116,19 +143,24 @@ class GameMenu: SKScene {
         
         startBox = self.childNode(withName: "startBox") as! SKShapeNode
         
-        rotateAction = SKAction.rotate(byAngle: Constants.initialZRotation, duration: Constants.rotationDuration) // Rotate 90 degrees over 1 second
-        repeatAction = SKAction.repeatForever(rotateAction)
-        startBox.run(repeatAction)
-        
+        let pulseDownAction = SKAction.fadeAlpha(to: 0.1, duration: 1)
+        let pulseUpAction = SKAction.fadeAlpha(to: 0.82, duration: 1.1)
+        let pulseSequence = SKAction.sequence([pulseDownAction, pulseUpAction]) // Create the sequence
+        repeatAction = SKAction.repeatForever(pulseSequence)
+        startGame.run(repeatAction)
+
     }
     
     
     func setupStartButton() {
         DispatchQueue.main.async {
-            self.startBox.removeAllActions()
-            self.startBox.zRotation = Constants.initialZRotation
+            self.startGame.removeAllActions()
             self.startGame.fontSize = 42
+            self.startGame.alpha = 1
+            self.startGame.fontColor = .systemYellow
             self.startGame.text = "PLAY"
+
+            self.startBox.alpha = 1
         }
     }
     
@@ -200,6 +232,7 @@ class GameMenu: SKScene {
         addChild(crashTestButton)
         
     }
+    
     
     
     // for test phrases

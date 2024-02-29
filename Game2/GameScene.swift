@@ -14,7 +14,13 @@ enum CollisionType: UInt32 {
     case fallingBox = 4
 }
 
+protocol GameSceneDelegate: AnyObject {
+    func shareScore(score: Int, wuhbaNumber: Int)
+}
+
 class GameScene: SKScene, SKPhysicsContactDelegate {
+    
+    weak var gameDelegate: GameSceneDelegate?
     
     var gameSettings = Settings.sharedInstance
 
@@ -36,6 +42,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var boxParent = SKSpriteNode()
     private var spout1 = SKShapeNode()
     private var spout2 = SKShapeNode()
+    
+    private var shareButton = SKSpriteNode()
+    private var exitButton = SKSpriteNode()
+    private var shareLabel = SKLabelNode()
+
 
     var scoreSquares: [SKShapeNode] = []
     let boxPositions: [CGFloat] = [-244.0,-122.0,0.0,122.0,244.0]
@@ -58,6 +69,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         scoreLabel = self.childNode(withName: "scoreLabel") as! SKLabelNode
         spout1 = self.childNode(withName: "spout1") as! SKShapeNode
         spout2 = self.childNode(withName: "spout2") as! SKShapeNode
+        
+        shareLabel = self.childNode(withName: "shareLabel") as! SKLabelNode
+        shareButton = self.childNode(withName: "shareButton") as! SKSpriteNode
+        exitButton = self.childNode(withName: "exitButton") as! SKSpriteNode
+
+        shareLabel.isHidden = true
+        exitButton.isHidden = true
+        shareButton.isHidden = true
 
 
         // set up physics world
@@ -183,13 +202,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     
-    func backToMenu(){
-        
-    }
-    
     func backToMenuWithDelay() {
         // Schedule the scene transition after a delay
-        let delayAction = SKAction.wait(forDuration: 3.0)
+        let delayAction = SKAction.wait(forDuration: 0.1)
         let transitionAction = SKAction.run { [weak self] in
             // Make sure self is still around and gameMenu is not nil
             guard let strongSelf = self, let gameMenu = strongSelf.gameMenu else {
@@ -223,6 +238,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         spout1.isHidden = true
         spout2.isHidden = true
+
         
         if gameSettings.getHighScore() < finalScore {
                     gameSettings.saveHighScore(finalScore)
@@ -248,6 +264,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         boxParent.removeAllChildren()
         boxParent.color = .white
         boxParent.run(SKAction.move(to: self.anchorPoint, duration: 0.5))
+        boxParent.removeFromParent()
         let label = SKLabelNode(text: answerPhrase)
         label.fontColor = .white
         label.fontName = "AvenirNext-Bold"
@@ -257,7 +274,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         label.run(fadeAction)
         addChild(label)
         finalScoreBoxes()
-        backToMenuWithDelay()
+        
+        shareLabel.isHidden = false
+        shareButton.isHidden = false
+        
+        //backToMenuWithDelay()
+
     }
 
     
@@ -281,6 +303,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         numberLabel.isHidden = false
         scoreLabel.isHidden = false
+        exitButton.isHidden = false
+
     }
     
     func setupScoreBoxes(){
@@ -322,9 +346,28 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         for touch in touches {
             let location = touch.location(in: self)
-            let newAction = SKAction.moveTo(x: location.x, duration: 0.1)
-            moveBoxAction = newAction
-            boxParent.run(moveBoxAction)
+            
+            
+                    
+            if let nodeName = atPoint(location).name {
+                if nodeName == "shareButton"{
+                    print("shareButton")
+                    gameDelegate?.shareScore(score: 10-score, wuhbaNumber: currentPhrase!.wuhbaNumber)
+                }
+                
+                if nodeName == "exitButton"{
+                    print("exitButton")
+                    backToMenuWithDelay()
+                }
+                        
+            }
+            
+            if stopEverything == false && gameComplete == false {
+                let newAction = SKAction.moveTo(x: location.x, duration: 0.1)
+                moveBoxAction = newAction
+                boxParent.run(moveBoxAction)
+            }
+    
         }
         
         for t in touches { self.touchDown(atPoint: t.location(in: self)) }
