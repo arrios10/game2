@@ -30,5 +30,7 @@
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
 	<string>1:886309009536:ios:848bce8a76f3f9131ace65</string>
+	<key>DATABASE_URL</key>
+	<string>https://wuhba-cd82e-default-rtdb.firebaseio.com</string>
 </dict>
 </plist>
