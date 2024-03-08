@@ -26,6 +26,10 @@ class GameMenu: SKScene {
     var score: Int = 0
     
     var crashTestButton: SKLabelNode!
+    var numberLabel: SKLabelNode!
+    var checkBox = SKSpriteNode()
+
+
     private var boxParent = SKSpriteNode()
     var startGame = SKLabelNode()
     var startBox = SKShapeNode()
@@ -36,12 +40,19 @@ class GameMenu: SKScene {
     
     
     override func didMove(to view: SKView) {
+    
         // Listen for the app returning to the foreground
         NotificationCenter.default.addObserver(self, selector: #selector(appDidBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
+        
+        checkBox = self.childNode(withName: "checkbox") as! SKSpriteNode
+        checkBox.isHidden = true
 
+        // wuhba number label
+        numberLabel = self.childNode(withName: "wuhbaNumber") as? SKLabelNode
+        numberLabel.isHidden = true
 
         setupStartBox()
-        score = gameSettings.getHighScore()
+        score = Settings.sharedInstance.highScore
         setupScoreBoxes()
         self.anchorPoint = CGPoint(x: 0.5, y: 0.5)
         
@@ -87,10 +98,9 @@ class GameMenu: SKScene {
                     } else {
                         self.prefetchDataForCurrentDate()
                     }
-                    
                 
                 case "highScore":
-                    //gameDelegate?.shareScore(score: gameSettings.getHighScore())
+                    //show score history
                     print("fix later")
                     
                 case "crashTestButton":
@@ -106,15 +116,18 @@ class GameMenu: SKScene {
     }
     
     @objc func appDidBecomeActive() {
-        // Check if the current date is different from the date of the prefetched phrase
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         let currentDate = dateFormatter.string(from: Date())
+        let lastPlayedDate = Settings.sharedInstance.getLastPlayedDate()
 
-        if prefetchedTestPhrase?.date != currentDate {
-            // Date has changed, fetch the new phrase
+        // check if the current date is different from the last played date
+        if lastPlayedDate != currentDate {
+            Settings.sharedInstance.playedToday = false
+            Settings.sharedInstance.saveLastPlayedDate(currentDate) // update last played date
+            // date has changed, fetch the new phrase
             prefetchDataForCurrentDate()
-        }
+        } 
     }
 
     deinit {
@@ -129,8 +142,7 @@ class GameMenu: SKScene {
         FirebaseManager.shared.fetchTestPhrase(byDate: currentDate) { fetchedTestPhrase in
             self.prefetchedTestPhrase = fetchedTestPhrase
             print("Data prefetched successfully.")
-            self.setupStartButton()
-            
+            self.readyToPlay(wuhbaNumber: self.prefetchedTestPhrase!.wuhbaNumber)
             
         }
         
@@ -152,15 +164,20 @@ class GameMenu: SKScene {
     }
     
     
-    func setupStartButton() {
+    func readyToPlay(wuhbaNumber: Int) {
         DispatchQueue.main.async {
             self.startGame.removeAllActions()
             self.startGame.fontSize = 42
             self.startGame.alpha = 1
             self.startGame.fontColor = .systemYellow
             self.startGame.text = "PLAY"
-
             self.startBox.alpha = 1
+            self.numberLabel.text = "Wuhba No. " + String(wuhbaNumber)
+            self.numberLabel.isHidden = false
+            
+            if Settings.sharedInstance.playedToday == true{
+                self.checkBox.isHidden = false
+            }
         }
     }
     
@@ -221,7 +238,6 @@ class GameMenu: SKScene {
     
     // for crash testing
     func setupCrashButton(){
-        
         // Initialize crashTestButton
         crashTestButton = SKLabelNode(fontNamed: "Avenir")
         crashTestButton.text = "Test Crash"
@@ -243,26 +259,8 @@ class GameMenu: SKScene {
         // Your test data
         let testPhrases: [TestPhrases] = [
             
-            TestPhrases(phrase: "Time is now, or never.", wordList: ["Time", "Is", "Now","Or", "Never"], source: "", notes: "", wordCount: 5, wuhbaNumber: 1, date: "2024-02-24"),
-            
-            TestPhrases(phrase: "Action is its own reward.", wordList: ["Action", "Is", "Its", "Own", "Reward"], source: "", notes: "", wordCount: 5, wuhbaNumber: 2, date: "2024-02-25"),
-            
-            TestPhrases(phrase: "As I think, I am.", wordList: ["As", "I", "Think", "I", "Am"], source: "", notes: "", wordCount: 5, wuhbaNumber: 3, date: "2024-02-26"),
-            
-            TestPhrases(phrase: "What is above, is below.", wordList: ["What", "Is", "Above", "Is", "Below"], source: "", notes: "", wordCount: 5, wuhbaNumber: 4, date: "2024-02-27"),
-            
-            TestPhrases(phrase: "This phrase is not true.", wordList: ["This", "Phrase", "Is", "Not", "True"], source: "", notes: "", wordCount: 5, wuhbaNumber: 5, date: "2024-02-28"),
-            
-            TestPhrases(phrase: "I think, so I will.", wordList: ["I", "Think", "So", "I", "Will"], source: "", notes: "", wordCount: 5, wuhbaNumber: 6, date: "2024-03-01"),
-            
-            TestPhrases(phrase: "Kind words unlock iron doors.", wordList: ["Kind", "Words", "Unlock", "Iron", "Doors"], source: "", notes: "", wordCount: 5, wuhbaNumber: 7, date: "2024-03-02"),
-            
-            TestPhrases(phrase: "Last mile is the longest.", wordList: ["Last", "Mile", "Is", "The", "Longest"], source: "", notes: "", wordCount: 5, wuhbaNumber: 8, date: "2024-03-03"),
-            
-            TestPhrases(phrase: "Make a long story short.", wordList: ["Make", "A", "Long", "Story", "Short"], source: "", notes: "", wordCount: 5, wuhbaNumber: 9, date: "2024-03-04"),
-            
-            TestPhrases(phrase: "My habits are my base.", wordList: ["My", "Habits", "Are", "My", "Base"], source: "", notes: "", wordCount: 5, wuhbaNumber: 10, date: "2024-03-05"),
-            
+            TestPhrases(date: "2024-03-03", metadata: "", notes: "", phrase: "Last mile is the longest.", wordList: ["Last", "Mile", "Is", "The", "Longest"], wuhbaNumber: 1),
+            TestPhrases(date: "2024-03-04", metadata: "", notes: "", phrase: "Last mile is the longest.", wordList: ["Make", "A", "Long", "Story", "Short"], wuhbaNumber: 2)
             
         ]
         
@@ -272,9 +270,8 @@ class GameMenu: SKScene {
             let phraseDict: [String : Any] = [
                 "phrase": phrase.phrase,
                 "wordList": phrase.wordList,
-                "source": phrase.source,
+                "metadata": phrase.metadata,
                 "notes": phrase.notes,
-                "wordCount": phrase.wordCount,
                 "wuhbaNumber": phrase.wuhbaNumber,
                 "date": phrase.date
             ]

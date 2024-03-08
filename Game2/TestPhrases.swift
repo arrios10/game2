@@ -8,13 +8,12 @@
 import Foundation
 
 struct TestPhrases {
+    let date: String
+    let metadata: String
+    let notes: String
     let phrase: String
     let wordList: [String]
-    let source: String
-    let notes: String
-    let wordCount: Int
     let wuhbaNumber: Int
-    let date: String
 }
 
 

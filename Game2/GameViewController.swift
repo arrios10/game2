@@ -50,14 +50,12 @@ class GameViewController: UIViewController {
         return true
     }
 }
-///Users/andrewrios/Dev/Game2/Game2/GameViewController.swift:56:10 Instance method 'shareScore(score:wuhbaNumer:)' has different argument labels from those required by protocol 'GameSceneDelegate' ('shareScore(score:wuhbaNumber:)')
-
 
 extension GameViewController: GameSceneDelegate {
     func shareScore(score: Int, wuhbaNumber: Int) {
         let scoreEmojiString = emojiScoreString(forScore: score)
         
-        let scoreMessage = "\(score)/10. Wuhba \(wuhbaNumber). \(scoreEmojiString) @playWuhba"
+        let scoreMessage = "\(scoreEmojiString) - \(score)/10. Wuhba No. \(wuhbaNumber). @playWuhba"
         let activityViewController = UIActivityViewController(activityItems: [scoreMessage], applicationActivities: nil)
         
         DispatchQueue.main.async { [weak self] in

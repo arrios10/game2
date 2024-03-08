@@ -18,23 +18,31 @@ class Helper : NSObject {
 
 class Settings {
     static let sharedInstance = Settings()
-    private init(){
-        
-    }
     
-    var highScore: Int = 0
-    let highScoreKey = "highScore"
+    private init() {}
     
-    var userID = ""
-    let userKey = "userID"
-    
-    func saveHighScore(_ value: Int) {
-        UserDefaults.standard.set(value, forKey: highScoreKey)
-        UserDefaults.standard.synchronize()
-    }
-    
-    func getHighScore() -> Int {
-        return UserDefaults.standard.integer(forKey: highScoreKey)
-    }
+    private let highScoreKey = "highScore"
+    private let playedTodayKey = "playedToday"
+    private let lastPlayedDateKey = "lastPlayedDate"
 
+    
+    var highScore: Int {
+        get { UserDefaults.standard.integer(forKey: highScoreKey) }
+        set { UserDefaults.standard.set(newValue, forKey: highScoreKey) }
+    }
+    
+    var playedToday: Bool {
+        get { UserDefaults.standard.bool(forKey: playedTodayKey) }
+        set { UserDefaults.standard.set(newValue, forKey: playedTodayKey) }
+    }
+    
+    //save the last played date
+    func saveLastPlayedDate(_ date: String) {
+        UserDefaults.standard.set(date, forKey: lastPlayedDateKey)
+    }
+    
+    //get the last played date
+    func getLastPlayedDate() -> String? {
+        return UserDefaults.standard.string(forKey: lastPlayedDateKey)
+    }
 }

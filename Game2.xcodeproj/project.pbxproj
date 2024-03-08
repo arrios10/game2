@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		012F80002B9792E1008E027A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 012F7FFF2B9792E1008E027A /* GoogleService-Info.plist */; };
 		013018002A849BE9008E9704 /* GameMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013017FF2A849BE9008E9704 /* GameMenu.swift */; };
 		013D41C82A985AEA00964E92 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 013D41C72A985AEA00964E92 /* FirebaseAuth */; };
 		013D41CA2A99751300964E92 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 013D41C92A99751300964E92 /* FirebaseDatabase */; };
@@ -21,10 +22,10 @@
 		01A30DDC2A68CF0500ADA84D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 01A30DDA2A68CF0500ADA84D /* Main.storyboard */; };
 		01A30DDE2A68CF0700ADA84D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 01A30DDD2A68CF0700ADA84D /* Assets.xcassets */; };
 		01A30DE12A68CF0700ADA84D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 01A30DDF2A68CF0700ADA84D /* LaunchScreen.storyboard */; };
+		01B497DE2B96B8EF007FE390 /* UserScore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B497DD2B96B8EF007FE390 /* UserScore.swift */; };
 		01BCD2432A71711B005FA071 /* Explosion2.sks in Resources */ = {isa = PBXBuildFile; fileRef = 01BCD2412A71711B005FA071 /* Explosion2.sks */; };
 		01BCD2442A71711B005FA071 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 01BCD2422A71711B005FA071 /* Assets.xcassets */; };
 		01BCD2462A71DA61005FA071 /* TestPhrases.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BCD2452A71DA61005FA071 /* TestPhrases.swift */; };
-		01E580BA2A96F19B00BCA889 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 01E580B92A96F19B00BCA889 /* GoogleService-Info.plist */; };
 		01E580BD2A96F26300BCA889 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 01E580BC2A96F26300BCA889 /* FirebaseAnalytics */; };
 		01E580C32A97069400BCA889 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 01E580C22A97069400BCA889 /* FirebaseCrashlytics */; };
 		01F044D42ABC9C4700472FDE /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 01F044D32ABC9C4700472FDE /* FirebaseAnalytics */; };
@@ -37,6 +38,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		012F7FFF2B9792E1008E027A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		013017FF2A849BE9008E9704 /* GameMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameMenu.swift; sourceTree = "<group>"; };
 		013D41CB2A99A8A700964E92 /* FirebaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseManager.swift; sourceTree = "<group>"; };
 		016F35A62A81DD1000563109 /* GameMenu.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameMenu.sks; sourceTree = "<group>"; };
@@ -50,11 +52,11 @@
 		01A30DDB2A68CF0500ADA84D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		01A30DDD2A68CF0700ADA84D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		01A30DE02A68CF0700ADA84D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		01B497DD2B96B8EF007FE390 /* UserScore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserScore.swift; sourceTree = "<group>"; };
 		01BCD2412A71711B005FA071 /* Explosion2.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Explosion2.sks; sourceTree = "<group>"; };
 		01BCD2422A71711B005FA071 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		01BCD2452A71DA61005FA071 /* TestPhrases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestPhrases.swift; sourceTree = "<group>"; };
 		01C2E2682A854AE300EB1ED2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		01E580B92A96F19B00BCA889 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		01F795392AE4D4080053688E /* BoxManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoxManager.swift; sourceTree = "<group>"; };
 		01F7953B2AE5A0CA0053688E /* FallingBoxManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FallingBoxManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -111,13 +113,14 @@
 				01F795392AE4D4080053688E /* BoxManager.swift */,
 				01F7953B2AE5A0CA0053688E /* FallingBoxManager.swift */,
 				013D41CB2A99A8A700964E92 /* FirebaseManager.swift */,
+				01B497DD2B96B8EF007FE390 /* UserScore.swift */,
 				01A30DD82A68CF0500ADA84D /* GameViewController.swift */,
 				01A30DDA2A68CF0500ADA84D /* Main.storyboard */,
 				01A30DDD2A68CF0700ADA84D /* Assets.xcassets */,
 				01A30DDF2A68CF0700ADA84D /* LaunchScreen.storyboard */,
 				018F379D2A6E245700027BD0 /* Explosion.sks */,
 				01BCD2412A71711B005FA071 /* Explosion2.sks */,
-				01E580B92A96F19B00BCA889 /* GoogleService-Info.plist */,
+				012F7FFF2B9792E1008E027A /* GoogleService-Info.plist */,
 			);
 			path = Game2;
 			sourceTree = "<group>";
@@ -204,7 +207,7 @@
 			files = (
 				01A30DDC2A68CF0500ADA84D /* Main.storyboard in Resources */,
 				01A30DD32A68CF0500ADA84D /* GameScene.sks in Resources */,
-				01E580BA2A96F19B00BCA889 /* GoogleService-Info.plist in Resources */,
+				012F80002B9792E1008E027A /* GoogleService-Info.plist in Resources */,
 				01BCD2432A71711B005FA071 /* Explosion2.sks in Resources */,
 				01A30DDE2A68CF0700ADA84D /* Assets.xcassets in Resources */,
 				016F35A72A81DD1000563109 /* GameMenu.sks in Resources */,
@@ -225,11 +228,7 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
-				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}",
-				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${PRODUCT_NAME}",
-				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Info.plist",
-				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/GoogleService-Info.plist",
-				"$(BUILT_PRODUCTS_DIR)/$(EXECUTABLE_PATH)",
+				"",
 			);
 			outputFileListPaths = (
 			);
@@ -237,7 +236,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${BUILD_DIR%/Build/*}/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/run\"\n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -255,6 +254,7 @@
 				0193CA142A69E04A00372040 /* Helper.swift in Sources */,
 				01F7953A2AE4D4080053688E /* BoxManager.swift in Sources */,
 				01F7953C2AE5A0CA0053688E /* FallingBoxManager.swift in Sources */,
+				01B497DE2B96B8EF007FE390 /* UserScore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -401,17 +401,21 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = LGFHSY5VS8;
+				DEVELOPMENT_TEAM = P488YLR9S2;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Game2/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Wuhba;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.word-games";
+				INFOPLIST_KEY_NSUserTrackingUsageDescription = "We use activity data to improve your experience and develop new features for the app.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UIStatusBarHidden = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleDarkContent;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -425,7 +429,7 @@
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -437,17 +441,21 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = LGFHSY5VS8;
+				DEVELOPMENT_TEAM = P488YLR9S2;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Game2/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Wuhba;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.word-games";
+				INFOPLIST_KEY_NSUserTrackingUsageDescription = "We use activity data to improve your experience and develop new features for the app.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UIStatusBarHidden = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleDarkContent;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -461,7 +469,7 @@
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
