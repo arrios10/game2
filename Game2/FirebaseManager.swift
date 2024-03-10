@@ -37,10 +37,10 @@ class FirebaseManager {
                             wordList:wordList ,
                             wuhbaNumber: wuhbaNumber
                         )
-                        break // Since we only expect one result, we can break after finding the first match
+                        break // can break after finding the first match
                     }
                 }
-                completion(testPhrase) // Call completion with either the found phrase or nil if not found
+                completion(testPhrase) // call completion with either the found phrase or nil if not found
             }
         }
 }
