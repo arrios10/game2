@@ -57,7 +57,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // timers
     private weak var wordTimer: Timer?
     private weak var removeItemsTimer: Timer?
-
+    
     // word arrays
     var wordList: [String] = []
     var wordBank: [String] = []
@@ -245,9 +245,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             if Settings.sharedInstance.highScore < finalScore {
                 Settings.sharedInstance.highScore = finalScore
-                Settings.sharedInstance.playedToday = true
-                
             }
+            Settings.sharedInstance.playedToday = true
+
             // Log game completed event to Firebase Analytics
             Analytics.logEvent("game_completed", parameters: [
                 "final_score": finalScore,  // Replace 'finalScore' with actual variable
@@ -256,161 +256,161 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 
             ])
         }
-            
-            gameComplete = true
-            wordTimer?.invalidate()
-            removeItemsTimer?.invalidate()
-            for child in children {
-                if currentPhrase!.wordList.contains(child.name ?? "") {
-                    child.removeFromParent()
-                }
-            }
-            
-            boxParent.removeAllChildren()
-            boxParent.color = .white
-            boxParent.run(SKAction.move(to: self.anchorPoint, duration: 0.5))
-            boxParent.removeFromParent()
-            let label = SKLabelNode(text: answerPhrase)
-            label.fontColor = .white
-            label.fontName = "AvenirNext-Bold"
-            label.fontSize = 36
-            label.position.y = 42
-            let fadeAction = SKAction.fadeIn(withDuration: 0.4)
-            label.run(fadeAction)
-            addChild(label)
-            finalScoreBoxes()
-            
-            shareLabel.isHidden = false
-            shareButton.isHidden = false
-            
-            //backToMenuWithDelay()
-            
-        }
         
-        
-        func finalScoreBoxes() {
-            let baseX = self.frame.midX
-            let baseY = 150.0
-            let duration = 0.42
-            let initialOffset: CGFloat = 180
-            let stepOffset: CGFloat = 40
-            
-            for node in scoreSquares.reversed() {
-                if let nodeName = node.name, let nodeNumber = Int(nodeName), nodeNumber >= 1 && nodeNumber <= 10 {
-                    // For nodes 1 to 5, we move right from the midpoint
-                    // For nodes 6 to 10, we move left from the midpoint
-                    let moveX = baseX + (initialOffset - ((CGFloat(nodeNumber)-1) * stepOffset))
-                    let moveAction = SKAction.move(to: CGPoint(x: moveX, y: baseY), duration: duration)
-                    node.run(moveAction)
-                } else {
-                    print("Unrecognized node name or out of range: \(node.name ?? "nil")")
-                }
-            }
-            numberLabel.isHidden = false
-            scoreLabel.isHidden = false
-            exitButton.isHidden = false
-            
-        }
-        
-        func saveScore(_ score: UserScore) {
-            guard let uid = Auth.auth().currentUser?.uid else {
-                print("User not signed in")
-                return
-            }
-            
-            let ref = Database.database().reference().child("userScores").child(uid).child("scores").childByAutoId()
-            ref.setValue(score.toDictionary) { error, _ in
-                if let error = error {
-                    print("Error saving score: \(error.localizedDescription)")
-                } else {
-                    print("Score successfully saved")
-                }
+        gameComplete = true
+        wordTimer?.invalidate()
+        removeItemsTimer?.invalidate()
+        for child in children {
+            if currentPhrase!.wordList.contains(child.name ?? "") {
+                child.removeFromParent()
             }
         }
         
-        func setupScoreBoxes(){
-            // access gamescene score nodes
-            for i in 1...10 {
-                if let square = self.childNode(withName: "\(i)") as? SKShapeNode {
-                    scoreSquares.append(square)
-                }
+        boxParent.removeAllChildren()
+        boxParent.color = .white
+        boxParent.run(SKAction.move(to: self.anchorPoint, duration: 0.5))
+        boxParent.removeFromParent()
+        let label = SKLabelNode(text: answerPhrase)
+        label.fontColor = .white
+        label.fontName = "AvenirNext-Bold"
+        label.fontSize = 36
+        label.position.y = 42
+        let fadeAction = SKAction.fadeIn(withDuration: 0.4)
+        label.run(fadeAction)
+        addChild(label)
+        finalScoreBoxes()
+        
+        shareLabel.isHidden = false
+        shareButton.isHidden = false
+        
+        //backToMenuWithDelay()
+        
+    }
+    
+    
+    func finalScoreBoxes() {
+        let baseX = self.frame.midX
+        let baseY = 150.0
+        let duration = 0.42
+        let initialOffset: CGFloat = 180
+        let stepOffset: CGFloat = 40
+        
+        for node in scoreSquares.reversed() {
+            if let nodeName = node.name, let nodeNumber = Int(nodeName), nodeNumber >= 1 && nodeNumber <= 10 {
+                // For nodes 1 to 5, we move right from the midpoint
+                // For nodes 6 to 10, we move left from the midpoint
+                let moveX = baseX + (initialOffset - ((CGFloat(nodeNumber)-1) * stepOffset))
+                let moveAction = SKAction.move(to: CGPoint(x: moveX, y: baseY), duration: duration)
+                node.run(moveAction)
+            } else {
+                print("Unrecognized node name or out of range: \(node.name ?? "nil")")
             }
         }
-        //
+        numberLabel.isHidden = false
+        scoreLabel.isHidden = false
+        exitButton.isHidden = false
         
-        @objc func removeItems(){
-            gameSeconds += 1
-            for child in children{
-                if child.position.y < -self.size.height - 100{
-                    child.removeFromParent()
-                }
+    }
+    
+    func saveScore(_ score: UserScore) {
+        guard let uid = Auth.auth().currentUser?.uid else {
+            print("User not signed in")
+            return
+        }
+        
+        let ref = Database.database().reference().child("userScores").child(uid).child("scores").childByAutoId()
+        ref.setValue(score.toDictionary) { error, _ in
+            if let error = error {
+                print("Error saving score: \(error.localizedDescription)")
+            } else {
+                print("Score successfully saved")
             }
         }
-        
-        private func setupActions() {
-            moveBoxAction = SKAction.moveTo(x: 0, duration: 0.1) // Initialize with dummy value
-        }
-        
-        func updateScoreBoxes(){
-            for i in stride(from: 0, to: score, by: 1) {
-                let element = scoreSquares[i]
-                element.alpha = 0.1
-                element.fillColor = .white
+    }
+    
+    func setupScoreBoxes(){
+        // access gamescene score nodes
+        for i in 1...10 {
+            if let square = self.childNode(withName: "\(i)") as? SKShapeNode {
+                scoreSquares.append(square)
             }
         }
-        
-        // MARK: - Input Handling Methods
-        func touchDown(atPoint pos : CGPoint) {}
-        func touchMoved(toPoint pos : CGPoint) {}
-        func touchUp(atPoint pos : CGPoint) {}
-        
-        override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-            for touch in touches {
-                let location = touch.location(in: self)
-                
-                
-                
-                if let nodeName = atPoint(location).name {
-                    if nodeName == "shareButton"{
-                        print("shareButton")
-                        gameDelegate?.shareScore(score: 10-score, wuhbaNumber: currentPhrase!.wuhbaNumber)
-                    }
-                    
-                    if nodeName == "exitButton"{
-                        print("exitButton")
-                        backToMenuWithDelay()
-                    }
-                    
+    }
+    //
+    
+    @objc func removeItems(){
+        gameSeconds += 1
+        for child in children{
+            if child.position.y < -self.size.height - 100{
+                child.removeFromParent()
+            }
+        }
+    }
+    
+    private func setupActions() {
+        moveBoxAction = SKAction.moveTo(x: 0, duration: 0.1) // Initialize with dummy value
+    }
+    
+    func updateScoreBoxes(){
+        for i in stride(from: 0, to: score, by: 1) {
+            let element = scoreSquares[i]
+            element.alpha = 0.1
+            element.fillColor = .white
+        }
+    }
+    
+    // MARK: - Input Handling Methods
+    func touchDown(atPoint pos : CGPoint) {}
+    func touchMoved(toPoint pos : CGPoint) {}
+    func touchUp(atPoint pos : CGPoint) {}
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        for touch in touches {
+            let location = touch.location(in: self)
+            
+            
+            
+            if let nodeName = atPoint(location).name {
+                if nodeName == "shareButton"{
+                    print("shareButton")
+                    gameDelegate?.shareScore(score: 10-score, wuhbaNumber: currentPhrase!.wuhbaNumber)
                 }
                 
-                if stopEverything == false && gameComplete == false {
-                    let newAction = SKAction.moveTo(x: location.x, duration: 0.1)
-                    moveBoxAction = newAction
-                    boxParent.run(moveBoxAction)
+                if nodeName == "exitButton"{
+                    print("exitButton")
+                    backToMenuWithDelay()
                 }
                 
             }
             
-            for t in touches { self.touchDown(atPoint: t.location(in: self)) }
-        }
-        
-        override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-            for touch in touches {
-                let location = touch.location(in: self)
-                let newAction = SKAction.moveTo(x: location.x * 2, duration: 0.13)
+            if stopEverything == false && gameComplete == false {
+                let newAction = SKAction.moveTo(x: location.x, duration: 0.1)
                 moveBoxAction = newAction
                 boxParent.run(moveBoxAction)
             }
-            for t in touches { self.touchMoved(toPoint: t.location(in: self)) }
+            
         }
         
-        override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-            for t in touches { self.touchUp(atPoint: t.location(in: self)) }
-        }
-        
-        override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-            for t in touches { self.touchUp(atPoint: t.location(in: self)) }
-        }
-        
-        
+        for t in touches { self.touchDown(atPoint: t.location(in: self)) }
     }
+    
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        for touch in touches {
+            let location = touch.location(in: self)
+            let newAction = SKAction.moveTo(x: location.x * 2, duration: 0.13)
+            moveBoxAction = newAction
+            boxParent.run(moveBoxAction)
+        }
+        for t in touches { self.touchMoved(toPoint: t.location(in: self)) }
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        for t in touches { self.touchUp(atPoint: t.location(in: self)) }
+    }
+    
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        for t in touches { self.touchUp(atPoint: t.location(in: self)) }
+    }
+    
+    
+}

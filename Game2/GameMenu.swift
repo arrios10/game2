@@ -59,10 +59,10 @@ class GameMenu: SKScene {
         signIn { success in
             DispatchQueue.main.async {
                 if success {
-                    // Proceed with fetching data or enabling game features
+                    // proceed with fetching data or enabling game features
                     self.prefetchDataForCurrentDate()
                 } else {
-                    // Handle sign-in failure (e.g., show an alert to the user)
+                    // handle sign-in failure (show an alert to the user)
                     self.showSignInErrorAlert()
                 }
             }
@@ -174,10 +174,6 @@ class GameMenu: SKScene {
             self.startBox.alpha = 1
             self.numberLabel.text = "Wuhba No. " + String(wuhbaNumber)
             self.numberLabel.isHidden = false
-            
-            if Settings.sharedInstance.playedToday == true{
-                self.checkBox.isHidden = false
-            }
         }
     }
     
@@ -216,6 +212,9 @@ class GameMenu: SKScene {
         }
         updateScoreBoxes()
         
+        if Settings.sharedInstance.playedToday == true{
+            self.checkBox.isHidden = false
+        }
     }
     
     func updateScoreBoxes(){
