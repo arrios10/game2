@@ -8,6 +8,7 @@ import Foundation
 import SpriteKit
 import Firebase
 import FirebaseDatabase
+import FirebaseAnalytics
 
 enum CollisionType: UInt32 {
     case wordBox = 1
@@ -80,7 +81,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         // set up physics world
         physicsWorld.contactDelegate = self
-        physicsWorld.gravity = CGVector(dx: 0, dy: -3.14)
+        
+        //game speed
+        physicsWorld.gravity = CGVector(dx: 0, dy: -3.0)
         
         setupActions()
         
@@ -250,7 +253,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
             // Log game completed event to Firebase Analytics
             Analytics.logEvent("game_completed", parameters: [
-                "final_score": finalScore,  // Replace 'finalScore' with actual variable
+                "final_score": finalScore,
                 "game_seconds": gameSeconds,
                 "wuhba_number": currentPhrase!.wuhbaNumber
                 

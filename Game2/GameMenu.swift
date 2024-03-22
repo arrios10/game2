@@ -8,6 +8,7 @@ import SpriteKit
 import Firebase
 import FirebaseAuth
 import FirebaseDatabase
+import FirebaseAnalytics
 
 private enum Constants {
     static let rotationDuration: TimeInterval = 0.42
