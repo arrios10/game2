@@ -9,26 +9,35 @@ import Firebase
 import FirebaseAuth
 import FirebaseDatabase
 import FirebaseAnalytics
+import GameKit
 
 private enum Constants {
     static let rotationDuration: TimeInterval = 0.42
     static let initialZRotation: CGFloat = -CGFloat.pi / 2
 }
 
-class GameMenu: SKScene {
+class GameMenu: SKScene, GKGameCenterControllerDelegate {
+    
     
     weak var viewController: GameViewController?
+    
+    var gcDefaultLeaderBoard = String() // Check the default leaderboardID
 
-    var prefetchedTestPhrase: TestPhrases?
+    var prefetchedTestWord: GameData?
     
     var scoreSquares: [SKShapeNode] = []
     var graySquares: [SKShapeNode] = []
     
     var score: Int = 0
+    var totalScore: Int = 0
     
     var crashTestButton: SKLabelNode!
+    var totalScoreLabel: SKLabelNode!
+
     var numberLabel: SKLabelNode!
     var checkBox = SKSpriteNode()
+    var soundButton = SKSpriteNode()
+    var scoreFlag: SKSpriteNode!
 
 
     private var boxParent = SKSpriteNode()
@@ -39,21 +48,37 @@ class GameMenu: SKScene {
     private var rotateAction: SKAction!
     private var repeatAction: SKAction!
     
+    var gcEnabled = Bool() {
+        didSet {
+            if gcEnabled == true {
+                scoreFlag.isHidden = false
+            }
+        }
+    }
+    
     
     override func didMove(to view: SKView) {
+    
     
         // Listen for the app returning to the foreground
         NotificationCenter.default.addObserver(self, selector: #selector(appDidBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
         
+        authenticateLocalPlayer()
+        
         checkBox = self.childNode(withName: "checkbox") as! SKSpriteNode
         checkBox.isHidden = true
-
-        // wuhba number label
+        
+        soundButton = self.childNode(withName: "speaker") as! SKSpriteNode
         numberLabel = self.childNode(withName: "wuhbaNumber") as? SKLabelNode
+        totalScoreLabel = self.childNode(withName: "totalScoreLabel") as? SKLabelNode
         numberLabel.isHidden = true
+        
+        updateSoundIcon()
 
         setupStartBox()
         score = Settings.sharedInstance.highScore
+        totalScore = Settings.sharedInstance.getLast30DayScore()
+        totalScoreLabel.text = String(totalScore)
         setupScoreBoxes()
         self.anchorPoint = CGPoint(x: 0.5, y: 0.5)
         
@@ -78,17 +103,17 @@ class GameMenu: SKScene {
             if let nodeName = atPoint(touchLocation).name {
                 switch nodeName {
                 case "startGame", "startBox":
-                    if let fetchedTestPhrase = self.prefetchedTestPhrase {
-                        print("Using prefetched data: \(fetchedTestPhrase.phrase)")
+                    if let gameData = self.prefetchedTestWord {
+                        print("Using prefetched data: \(gameData.word)")
                         // Proceed to start the game with prefetched data
                         
                         // Log the event to Firebase Analytics
                         Analytics.logEvent("game_started", parameters: [
-                            "date": fetchedTestPhrase.date
+                            "date": gameData.date
                         ])
                         // Assuming your GameScene has a property called currentPhrase
                         if let gameScene = GameScene(fileNamed: "GameScene") {
-                            gameScene.currentPhrase = fetchedTestPhrase
+                            gameScene.currentWord = gameData
                             gameScene.gameMenu = self
                             gameScene.gameDelegate = viewController
                             gameScene.scaleMode = .aspectFill
@@ -104,10 +129,17 @@ class GameMenu: SKScene {
                     //show score history
                     print("fix later")
                     
+                case "speaker":
+                    Settings.sharedInstance.soundEnabled.toggle()
+                    updateSoundIcon()
+
                 case "crashTestButton":
                     // Deliberate crash
                     let numbers = [0]
                     let _ = numbers[1]
+                    
+                case "scoreFlag", "totalScoreLabel", "totalScore":
+                    showLeaderBoard()
                     
                 default:
                     break
@@ -115,6 +147,14 @@ class GameMenu: SKScene {
             }
         }
     }
+    
+    func updateSoundIcon() {
+        if Settings.sharedInstance.soundEnabled {
+            soundButton.texture = SKTexture(imageNamed: "speaker.png")
+        } else {
+            soundButton.texture = SKTexture(imageNamed: "mute.png")
+        }
+            }
     
     @objc func appDidBecomeActive() {
         let dateFormatter = DateFormatter()
@@ -140,15 +180,15 @@ class GameMenu: SKScene {
         dateFormatter.dateFormat = "yyyy-MM-dd"
         let currentDate = dateFormatter.string(from: Date())
         
-        FirebaseManager.shared.fetchTestPhrase(byDate: currentDate) { fetchedTestPhrase in
-            self.prefetchedTestPhrase = fetchedTestPhrase
+        FirebaseManager.shared.fetchGameData(byDate: currentDate) { fetchedTestPhrase in
+            self.prefetchedTestWord = fetchedTestPhrase
             print("Data prefetched successfully.")
-            self.readyToPlay(wuhbaNumber: self.prefetchedTestPhrase!.wuhbaNumber)
+            self.readyToPlay(wuhbaNumber: self.prefetchedTestWord!.wuhbaNumber)
             
         }
         
     }
-    
+        
     func setupStartBox(){
         startGame = self.childNode(withName: "startGame") as! SKLabelNode
         
@@ -173,7 +213,7 @@ class GameMenu: SKScene {
             self.startGame.fontColor = .systemYellow
             self.startGame.text = "PLAY"
             self.startBox.alpha = 1
-            self.numberLabel.text = "Wuhba No. " + String(wuhbaNumber)
+            self.numberLabel.text = "WUHBA No. " + String(wuhbaNumber)
             self.numberLabel.isHidden = false
         }
     }
@@ -249,36 +289,47 @@ class GameMenu: SKScene {
         
     }
     
+    func gameCenterViewControllerDidFinish(_ gameCenterViewController: GKGameCenterViewController) {
+        gameCenterViewController.dismiss(animated: true, completion: nil)
+    }
     
-    
-    // for test phrases
-    func uploadTestData() {
-        // Initialize a DatabaseReference
-        let ref = Database.database().reference()
+    func authenticateLocalPlayer() {
+        let localPlayer: GKLocalPlayer = GKLocalPlayer.local
         
-        // Your test data
-        let testPhrases: [TestPhrases] = [
-            
-            TestPhrases(date: "2024-03-03", metadata: "", notes: "", phrase: "Last mile is the longest.", wordList: ["Last", "Mile", "Is", "The", "Longest"], wuhbaNumber: 1),
-            TestPhrases(date: "2024-03-04", metadata: "", notes: "", phrase: "Last mile is the longest.", wordList: ["Make", "A", "Long", "Story", "Short"], wuhbaNumber: 2)
-            
-        ]
+        //gcEnabled = localPlayer.isAuthenticated
         
-        for phrase in testPhrases {
-            // Create a Dictionary representation of your object
-            print(phrase)
-            let phraseDict: [String : Any] = [
-                "phrase": phrase.phrase,
-                "wordList": phrase.wordList,
-                "metadata": phrase.metadata,
-                "notes": phrase.notes,
-                "wuhbaNumber": phrase.wuhbaNumber,
-                "date": phrase.date
-            ]
-            
-            // Generate a new child location using a unique key and save the Dictionary into it
-            ref.child("testPhrases").child("\(phrase.wuhbaNumber)").setValue(phraseDict)
+        localPlayer.authenticateHandler = {(ViewController, error) -> Void in
+            if let ViewController = ViewController {
+                // 1. Show login if player is not logged in
+                self.gameVC.present(ViewController, animated: true, completion: nil)
+            } else if (localPlayer.isAuthenticated) {
+                // 2. Player is already authenticated & logged in, load game center
+                // Get the default leaderboard ID
+                localPlayer.loadDefaultLeaderboardIdentifier(completionHandler: { (leaderboardIdentifer, error) in
+                    if let error = error { print(error)
+                    } else { self.gcDefaultLeaderBoard = leaderboardIdentifer! }
+                })
+                
+            } else {
+                // 3. Game center is not enabled on the users device
+                //self.gcEnabled = false
+                
+                print("Local player could not be authenticated!")
+                if let error = error {print(error)}
+            }
         }
+    }
+    
+    func showLeaderBoard() {
+        let gcVC = GKGameCenterViewController()
+        
+        gcVC.gameCenterDelegate = self
+        gcVC.viewState = .leaderboards
+        gcVC.leaderboardIdentifier? = "sctopspeed"
+        
+        let viewController = self.view?.window?.rootViewController
+        
+        viewController?.present(gcVC, animated: true, completion: nil)
     }
     
 }

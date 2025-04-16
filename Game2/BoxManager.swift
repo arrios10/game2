@@ -14,13 +14,13 @@ class BoxManager {
     var totalBoxes: Int = 0
     let boxPositions: [CGFloat] = [-244.0,-122.0,0.0,122.0,244.0]
     let gameFrame:CGRect
-    let wordList: [String]  // Added wordList property
+    let letterList: [String]  // Added wordList property
 
     
-    init(gameFrame: CGRect, boxParent: SKSpriteNode, totalBoxes: Int,wordList: [String]) {
+    init(gameFrame: CGRect, boxParent: SKSpriteNode, totalBoxes: Int,letterList: [String]) {
         self.boxParent = boxParent
         self.totalBoxes = totalBoxes
-        self.wordList = wordList  // Assign wordList
+        self.letterList = letterList  // Assign wordList
         self.gameFrame = gameFrame
        }
     
@@ -64,7 +64,7 @@ class BoxManager {
             box.physicsBody?.contactTestBitMask = CollisionType.fallingBox.rawValue
             
             // set box name to current word
-            box.name = wordList[i]
+            box.name = letterList[i]
         }
         
         // set parent box properties

@@ -1,5 +1,5 @@
 //
-//  TestPhrases.swift
+//  GameData.swift
 //  Game2
 //
 //  Created by Andrew Rios on 7/26/23.
@@ -11,8 +11,8 @@ struct GameData {
     let date: String
     let metadata: String
     let notes: String
-    let phrase: String
-    let wordList: [String]
+    let word: String
+    let letterList: [String]
     let wuhbaNumber: Int
 }
 
