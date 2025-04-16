@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct TestPhrases {
+struct GameData {
     let date: String
     let metadata: String
     let notes: String
