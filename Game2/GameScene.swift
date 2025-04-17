@@ -300,7 +300,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             saveDailyScore(finalScore, for: currentWord.date)
             
-            let newGKScore = GKScore(leaderboardIdentifier: "wscore")
+            let newGKScore = GKScore(leaderboardIdentifier: "wuhba30dayscore")
             newGKScore.value = Int64(Settings.sharedInstance.getLast30DayScore())
             GKScore.report([newGKScore]) { (error) in
                 if error != nil {
@@ -337,7 +337,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         boxParent.run(SKAction.move(to: self.anchorPoint, duration: 0.5))
         boxParent.removeFromParent()
         let label = SKLabelNode(text: answerWord)
-        label.fontColor = .white
+        label.fontColor = .systemYellow
         label.fontName = "AvenirNext-Bold"
         label.fontSize = 36
         label.position.y = 42

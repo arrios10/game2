@@ -325,7 +325,7 @@ class GameMenu: SKScene, GKGameCenterControllerDelegate {
         
         gcVC.gameCenterDelegate = self
         gcVC.viewState = .leaderboards
-        gcVC.leaderboardIdentifier? = "sctopspeed"
+        gcVC.leaderboardIdentifier? = "wuhba30dayscore"
         
         let viewController = self.view?.window?.rootViewController
         
