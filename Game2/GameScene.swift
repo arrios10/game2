@@ -53,6 +53,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var pauseButton2 = SKShapeNode()
     var numberLabel = SKLabelNode()
     var scoreLabel = SKLabelNode()
+    var answerLabel = SKLabelNode()
     
     // sounds
     let rightSound = SKAction.playSoundFileNamed("Pickup_coin32.wav", waitForCompletion: false)
@@ -70,6 +71,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // MARK: - Lifecycle Methods
     override func didMove(to view: SKView) {
+        
+        answerLabel = SKLabelNode(text: "SHOW ANSWER")
+        answerLabel.name = "answerLabel"
+        answerLabel.fontColor = .white
         
         scoreLabel = self.childNode(withName: "scoreLabel") as! SKLabelNode
         spout1 = self.childNode(withName: "spout1") as! SKShapeNode
@@ -287,6 +292,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let finalScore = 10-score
         
         if finalScore > 0 {
+            answerLabel.text = answerWord
+            answerLabel.fontColor = .systemYellow
+            
             if Settings.sharedInstance.soundEnabled {
                 run(completeSound)
             }
@@ -336,14 +344,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         boxParent.color = .white
         boxParent.run(SKAction.move(to: self.anchorPoint, duration: 0.5))
         boxParent.removeFromParent()
-        let label = SKLabelNode(text: answerWord)
-        label.fontColor = .systemYellow
-        label.fontName = "AvenirNext-Bold"
-        label.fontSize = 36
-        label.position.y = 42
+        answerLabel.fontName = "AvenirNext-Bold"
+        answerLabel.fontSize = 36
+        answerLabel.position.y = 42
         let fadeAction = SKAction.fadeIn(withDuration: 0.4)
-        label.run(fadeAction)
-        addChild(label)
+        answerLabel.run(fadeAction)
+        addChild(answerLabel)
         finalScoreBoxes()
         
         shareLabel.isHidden = false
@@ -446,6 +452,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 if nodeName == "exitButton"{
                     print("exitButton")
                     backToMenuWithDelay()
+                }
+                if nodeName == "answerLabel"{
+                    answerLabel.text = answerWord
+                    answerLabel.fontColor = .systemYellow
                 }
                 
             }

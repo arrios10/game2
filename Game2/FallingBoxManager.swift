@@ -21,8 +21,6 @@ class FallingBoxManager {
     var letterBank: [String]
     var letterList: [String]  // Added wordList property
     
-    
-    
     init(gameFrame: CGRect, totalBoxes: Int,letterBank: [String],letterList: [String]) {
         self.totalBoxes = totalBoxes
         self.letterBank = letterBank  // Assign wordList
