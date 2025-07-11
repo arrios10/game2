@@ -14,33 +14,33 @@ class FirebaseManager {
     private init() {}
     
 
-    func fetchTestPhrase(byDate date: String, completion: @escaping (TestPhrases?) -> Void) {
+    func fetchGameData(byDate date: String, completion: @escaping (GameData?) -> Void) {
             let ref = Database.database().reference()
         
-        ref.child("testPhrases").queryOrdered(byChild: "date").queryEqual(toValue: date).observeSingleEvent(of: .value) { (snapshot: DataSnapshot) in
-                var testPhrase: TestPhrases? = nil
+        ref.child("gameData").queryOrdered(byChild: "date").queryEqual(toValue: date).observeSingleEvent(of: .value) { (snapshot: DataSnapshot) in
+                var gameData: GameData? = nil
                 for child in snapshot.children.allObjects as! [DataSnapshot] {
                     
                     if let value = child.value as? [String: Any] {
-                        let phrase = value["phrase"] as? String ?? ""
-                        let wordList = value["wordList"] as? [String] ?? []
+                        let word = value["word"] as? String ?? ""
+                        let letterList = value["letterList"] as? [String] ?? []
                         let metadata = value["metadata"] as? String ?? ""
                         let notes = value["notes"] as? String ?? ""
                         let wuhbaNumber = value["wuhbaNumber"] as? Int ?? 0
                         let date = value["date"] as? String ?? ""
 
-                        testPhrase = TestPhrases(
+                        gameData = GameData(
                             date: date,
                             metadata: metadata,
                             notes: notes,
-                            phrase: phrase,
-                            wordList:wordList ,
+                            word: word,
+                            letterList: letterList ,
                             wuhbaNumber: wuhbaNumber
                         )
                         break // Since we only expect one result, we can break after finding the first match
                     }
                 }
-                completion(testPhrase) // Call completion with either the found phrase or nil if not found
+                completion(gameData) // Call completion with either the found data or nil if not found
             }
         }
 }

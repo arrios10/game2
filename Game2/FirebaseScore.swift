@@ -6,8 +6,9 @@
 //
 
 import Foundation
+import GameKit
 
-struct UserScore {
+struct FirebaseScore {
     let date: String
     let wuhbaNumber: Int
     let score: Int
@@ -19,5 +20,7 @@ struct UserScore {
             "score": score
         ]
     }
+    
+
 }
 

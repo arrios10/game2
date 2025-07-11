@@ -7,12 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		012F80002B9792E1008E027A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 012F7FFF2B9792E1008E027A /* GoogleService-Info.plist */; };
 		013018002A849BE9008E9704 /* GameMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013017FF2A849BE9008E9704 /* GameMenu.swift */; };
 		013D41C82A985AEA00964E92 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 013D41C72A985AEA00964E92 /* FirebaseAuth */; };
 		013D41CA2A99751300964E92 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 013D41C92A99751300964E92 /* FirebaseDatabase */; };
 		013D41CC2A99A8A700964E92 /* FirebaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013D41CB2A99A8A700964E92 /* FirebaseManager.swift */; };
 		016F35A72A81DD1000563109 /* GameMenu.sks in Resources */ = {isa = PBXBuildFile; fileRef = 016F35A62A81DD1000563109 /* GameMenu.sks */; };
+		017B07C32D94FFB60077662B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 017B07C22D94FFB60077662B /* GoogleService-Info.plist */; };
 		018F379E2A6E245700027BD0 /* Explosion.sks in Resources */ = {isa = PBXBuildFile; fileRef = 018F379D2A6E245700027BD0 /* Explosion.sks */; };
 		0193CA142A69E04A00372040 /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0193CA132A69E04A00372040 /* Helper.swift */; };
 		01A30DD12A68CF0500ADA84D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A30DD02A68CF0500ADA84D /* AppDelegate.swift */; };
@@ -22,10 +22,13 @@
 		01A30DDC2A68CF0500ADA84D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 01A30DDA2A68CF0500ADA84D /* Main.storyboard */; };
 		01A30DDE2A68CF0700ADA84D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 01A30DDD2A68CF0700ADA84D /* Assets.xcassets */; };
 		01A30DE12A68CF0700ADA84D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 01A30DDF2A68CF0700ADA84D /* LaunchScreen.storyboard */; };
-		01B497DE2B96B8EF007FE390 /* UserScore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B497DD2B96B8EF007FE390 /* UserScore.swift */; };
+		01B497DE2B96B8EF007FE390 /* FirebaseScore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B497DD2B96B8EF007FE390 /* FirebaseScore.swift */; };
 		01BCD2432A71711B005FA071 /* Explosion2.sks in Resources */ = {isa = PBXBuildFile; fileRef = 01BCD2412A71711B005FA071 /* Explosion2.sks */; };
 		01BCD2442A71711B005FA071 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 01BCD2422A71711B005FA071 /* Assets.xcassets */; };
-		01BCD2462A71DA61005FA071 /* TestPhrases.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BCD2452A71DA61005FA071 /* TestPhrases.swift */; };
+		01BCD2462A71DA61005FA071 /* GameData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BCD2452A71DA61005FA071 /* GameData.swift */; };
+		01E206C22D90578A0060D46A /* Pickup_coin32.wav in Resources */ = {isa = PBXBuildFile; fileRef = 01E206C12D90578A0060D46A /* Pickup_coin32.wav */; };
+		01E206C52D905DC60060D46A /* Pickup_coin94.wav in Resources */ = {isa = PBXBuildFile; fileRef = 01E206C42D905DC60060D46A /* Pickup_coin94.wav */; };
+		01E206C72D9256570060D46A /* Blip_select20.wav in Resources */ = {isa = PBXBuildFile; fileRef = 01E206C62D9256570060D46A /* Blip_select20.wav */; };
 		01E580BD2A96F26300BCA889 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 01E580BC2A96F26300BCA889 /* FirebaseAnalytics */; };
 		01E580C32A97069400BCA889 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 01E580C22A97069400BCA889 /* FirebaseCrashlytics */; };
 		01F044D42ABC9C4700472FDE /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 01F044D32ABC9C4700472FDE /* FirebaseAnalytics */; };
@@ -38,10 +41,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		012F7FFF2B9792E1008E027A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		013017FF2A849BE9008E9704 /* GameMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameMenu.swift; sourceTree = "<group>"; };
 		013D41CB2A99A8A700964E92 /* FirebaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseManager.swift; sourceTree = "<group>"; };
 		016F35A62A81DD1000563109 /* GameMenu.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameMenu.sks; sourceTree = "<group>"; };
+		017B07C22D94FFB60077662B /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		018F379D2A6E245700027BD0 /* Explosion.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Explosion.sks; sourceTree = "<group>"; };
 		0193CA132A69E04A00372040 /* Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
 		01A30DCD2A68CF0500ADA84D /* Game2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Game2.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -52,11 +55,15 @@
 		01A30DDB2A68CF0500ADA84D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		01A30DDD2A68CF0700ADA84D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		01A30DE02A68CF0700ADA84D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		01B497DD2B96B8EF007FE390 /* UserScore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserScore.swift; sourceTree = "<group>"; };
+		01B497DD2B96B8EF007FE390 /* FirebaseScore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseScore.swift; sourceTree = "<group>"; };
 		01BCD2412A71711B005FA071 /* Explosion2.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Explosion2.sks; sourceTree = "<group>"; };
 		01BCD2422A71711B005FA071 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		01BCD2452A71DA61005FA071 /* TestPhrases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestPhrases.swift; sourceTree = "<group>"; };
+		01BCD2452A71DA61005FA071 /* GameData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameData.swift; sourceTree = "<group>"; };
 		01C2E2682A854AE300EB1ED2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		01E206C12D90578A0060D46A /* Pickup_coin32.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Pickup_coin32.wav; sourceTree = "<group>"; };
+		01E206C42D905DC60060D46A /* Pickup_coin94.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Pickup_coin94.wav; sourceTree = "<group>"; };
+		01E206C62D9256570060D46A /* Blip_select20.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Blip_select20.wav; sourceTree = "<group>"; };
+		01E206C82D9336AE0060D46A /* Game2.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Game2.entitlements; sourceTree = "<group>"; };
 		01F795392AE4D4080053688E /* BoxManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoxManager.swift; sourceTree = "<group>"; };
 		01F7953B2AE5A0CA0053688E /* FallingBoxManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FallingBoxManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -102,25 +109,29 @@
 		01A30DCF2A68CF0500ADA84D /* Game2 */ = {
 			isa = PBXGroup;
 			children = (
+				01E206C82D9336AE0060D46A /* Game2.entitlements */,
 				01C2E2682A854AE300EB1ED2 /* Info.plist */,
 				013017FF2A849BE9008E9704 /* GameMenu.swift */,
 				016F35A62A81DD1000563109 /* GameMenu.sks */,
 				01A30DD62A68CF0500ADA84D /* GameScene.swift */,
 				01A30DD22A68CF0500ADA84D /* GameScene.sks */,
-				01BCD2452A71DA61005FA071 /* TestPhrases.swift */,
+				01BCD2452A71DA61005FA071 /* GameData.swift */,
 				01A30DD02A68CF0500ADA84D /* AppDelegate.swift */,
 				0193CA132A69E04A00372040 /* Helper.swift */,
 				01F795392AE4D4080053688E /* BoxManager.swift */,
 				01F7953B2AE5A0CA0053688E /* FallingBoxManager.swift */,
-				013D41CB2A99A8A700964E92 /* FirebaseManager.swift */,
-				01B497DD2B96B8EF007FE390 /* UserScore.swift */,
 				01A30DD82A68CF0500ADA84D /* GameViewController.swift */,
+				013D41CB2A99A8A700964E92 /* FirebaseManager.swift */,
+				01B497DD2B96B8EF007FE390 /* FirebaseScore.swift */,
 				01A30DDA2A68CF0500ADA84D /* Main.storyboard */,
 				01A30DDD2A68CF0700ADA84D /* Assets.xcassets */,
 				01A30DDF2A68CF0700ADA84D /* LaunchScreen.storyboard */,
 				018F379D2A6E245700027BD0 /* Explosion.sks */,
+				01E206C12D90578A0060D46A /* Pickup_coin32.wav */,
+				01E206C62D9256570060D46A /* Blip_select20.wav */,
+				01E206C42D905DC60060D46A /* Pickup_coin94.wav */,
 				01BCD2412A71711B005FA071 /* Explosion2.sks */,
-				012F7FFF2B9792E1008E027A /* GoogleService-Info.plist */,
+				017B07C22D94FFB60077662B /* GoogleService-Info.plist */,
 			);
 			path = Game2;
 			sourceTree = "<group>";
@@ -206,14 +217,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				01A30DDC2A68CF0500ADA84D /* Main.storyboard in Resources */,
+				01E206C22D90578A0060D46A /* Pickup_coin32.wav in Resources */,
 				01A30DD32A68CF0500ADA84D /* GameScene.sks in Resources */,
-				012F80002B9792E1008E027A /* GoogleService-Info.plist in Resources */,
 				01BCD2432A71711B005FA071 /* Explosion2.sks in Resources */,
 				01A30DDE2A68CF0700ADA84D /* Assets.xcassets in Resources */,
+				017B07C32D94FFB60077662B /* GoogleService-Info.plist in Resources */,
 				016F35A72A81DD1000563109 /* GameMenu.sks in Resources */,
 				01A30DE12A68CF0700ADA84D /* LaunchScreen.storyboard in Resources */,
 				01BCD2442A71711B005FA071 /* Assets.xcassets in Resources */,
 				018F379E2A6E245700027BD0 /* Explosion.sks in Resources */,
+				01E206C72D9256570060D46A /* Blip_select20.wav in Resources */,
+				01E206C52D905DC60060D46A /* Pickup_coin94.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -246,7 +260,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				01A30DD72A68CF0500ADA84D /* GameScene.swift in Sources */,
-				01BCD2462A71DA61005FA071 /* TestPhrases.swift in Sources */,
+				01BCD2462A71DA61005FA071 /* GameData.swift in Sources */,
 				013D41CC2A99A8A700964E92 /* FirebaseManager.swift in Sources */,
 				01A30DD92A68CF0500ADA84D /* GameViewController.swift in Sources */,
 				01A30DD12A68CF0500ADA84D /* AppDelegate.swift in Sources */,
@@ -254,7 +268,7 @@
 				0193CA142A69E04A00372040 /* Helper.swift in Sources */,
 				01F7953A2AE4D4080053688E /* BoxManager.swift in Sources */,
 				01F7953C2AE5A0CA0053688E /* FallingBoxManager.swift in Sources */,
-				01B497DE2B96B8EF007FE390 /* UserScore.swift in Sources */,
+				01B497DE2B96B8EF007FE390 /* FirebaseScore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -402,15 +416,16 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				CODE_SIGN_ENTITLEMENTS = Game2/Game2.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = P488YLR9S2;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Game2/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Wuhba;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.word-games";
-				INFOPLIST_KEY_NSUserTrackingUsageDescription = "We use activity data to improve your experience and develop new features for the app.";
+				INFOPLIST_KEY_NSUserTrackingUsageDescription = "We use activity data to improve your experience and develop new features for the app. We collect data about your activity to provide personalized ads.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -423,7 +438,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 2.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = relativistic.Wuhba;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -442,15 +457,16 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				CODE_SIGN_ENTITLEMENTS = Game2/Game2.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = P488YLR9S2;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Game2/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Wuhba;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.word-games";
-				INFOPLIST_KEY_NSUserTrackingUsageDescription = "We use activity data to improve your experience and develop new features for the app.";
+				INFOPLIST_KEY_NSUserTrackingUsageDescription = "We use activity data to improve your experience and develop new features for the app. We collect data about your activity to provide personalized ads.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -463,7 +479,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 2.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = relativistic.Wuhba;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

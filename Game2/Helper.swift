@@ -24,7 +24,29 @@ class Settings {
     private let highScoreKey = "highScore"
     private let playedTodayKey = "playedToday"
     private let lastPlayedDateKey = "lastPlayedDate"
-
+    private let dailyScoresKey = "dailyScores"
+    
+    var soundEnabled: Bool {
+        get {
+            if UserDefaults.standard.object(forKey: "soundEnabled") == nil {
+                return true
+            }
+            return UserDefaults.standard.bool(forKey: "soundEnabled")
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: "soundEnabled")
+        }
+    }
+    
+    // Retrieve and store a [String: Int] dictionary in UserDefaults
+    var dailyScores: [String: Int] {
+        get {
+            return UserDefaults.standard.dictionary(forKey: dailyScoresKey) as? [String: Int] ?? [:]
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: dailyScoresKey)
+        }
+    }
     
     var highScore: Int {
         get { UserDefaults.standard.integer(forKey: highScoreKey) }
@@ -44,5 +66,13 @@ class Settings {
     //get the last played date
     func getLastPlayedDate() -> String? {
         return UserDefaults.standard.string(forKey: lastPlayedDateKey)
+    }
+    
+    func getLast30DayScore() -> Int {
+        let scores = Settings.sharedInstance.dailyScores
+        
+        // If needed, ensure only 30 days remain in the dictionary (as above)
+        // Then just sum them up:
+        return scores.values.reduce(0, +)
     }
 }

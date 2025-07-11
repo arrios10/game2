@@ -9,6 +9,7 @@ import SpriteKit
 import Firebase
 import FirebaseDatabase
 import FirebaseAnalytics
+import GameKit
 
 enum CollisionType: UInt32 {
     case wordBox = 1
@@ -28,10 +29,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var boxManager: BoxManager!
     
     var gameMenu: GameMenu!
-    var currentPhrase: TestPhrases!
+    var currentWord: GameData!
     var totalBoxes: Int = 0
     var score = 0
-    var answerPhrase: String = ""
+    var answerWord: String = ""
     var stopEverything = false
     var gameComplete = false
     var gameSeconds: Int = 0
@@ -46,13 +47,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var exitButton = SKSpriteNode()
     private var shareLabel = SKLabelNode()
     
-    
     var scoreSquares: [SKShapeNode] = []
     let boxPositions: [CGFloat] = [-244.0,-122.0,0.0,122.0,244.0]
     var pauseButton = SKShapeNode()
     var pauseButton2 = SKShapeNode()
     var numberLabel = SKLabelNode()
     var scoreLabel = SKLabelNode()
+    var answerLabel = SKLabelNode()
+    
+    // sounds
+    let rightSound = SKAction.playSoundFileNamed("Pickup_coin32.wav", waitForCompletion: false)
+    let wrongSound = SKAction.playSoundFileNamed("Blip_select20.wav", waitForCompletion: false)
+    let completeSound = SKAction.playSoundFileNamed("Pickup_coin94.wav", waitForCompletion: false)
     
     
     // timers
@@ -60,11 +66,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private weak var removeItemsTimer: Timer?
     
     // word arrays
-    var wordList: [String] = []
-    var wordBank: [String] = []
+    var letterList: [String] = []
+    var letterBank: [String] = []
     
     // MARK: - Lifecycle Methods
     override func didMove(to view: SKView) {
+        
+        answerLabel = SKLabelNode(text: "SHOW ANSWER")
+        answerLabel.name = "answerLabel"
+        answerLabel.fontColor = .white
         
         scoreLabel = self.childNode(withName: "scoreLabel") as! SKLabelNode
         spout1 = self.childNode(withName: "spout1") as! SKShapeNode
@@ -77,13 +87,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         shareLabel.isHidden = true
         exitButton.isHidden = true
         shareButton.isHidden = true
-        
-        
+
         // set up physics world
         physicsWorld.contactDelegate = self
         
         //game speed
-        physicsWorld.gravity = CGVector(dx: 0, dy: -3.0)
+        physicsWorld.gravity = CGVector(dx: 0, dy: -2.8)
         
         setupActions()
         
@@ -105,19 +114,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // wuhba number label
         numberLabel = self.childNode(withName: "wuhbaNumber") as! SKLabelNode
         numberLabel.isHidden = true
-        numberLabel.text = "Wuhba No. " + String(currentPhrase!.wuhbaNumber)
+        numberLabel.text = "Wuhba No. " + String(currentWord!.wuhbaNumber)
         
-        // populate data from testPhrase array
-        wordList = currentPhrase!.wordList
-        answerPhrase = currentPhrase!.phrase
+        // populate data from array
+        letterList = currentWord!.letterList
+        answerWord = currentWord!.word
         totalBoxes = 5
         
         // setup the parent box and child boxes
-        boxManager = BoxManager(gameFrame: self.frame, boxParent: boxParent, totalBoxes: totalBoxes, wordList: currentPhrase!.wordList)
+        boxManager = BoxManager(gameFrame: self.frame, boxParent: boxParent, totalBoxes: totalBoxes, letterList: currentWord!.letterList)
         //setupBoxes(totalBoxes: totalBoxes, boxParent: boxParent)
         boxManager.setupBoxes()
         
-        fallingBoxManager = FallingBoxManager(gameFrame: self.frame, totalBoxes: totalBoxes, wordBank: wordBank, wordList: wordList)
+        fallingBoxManager = FallingBoxManager(gameFrame: self.frame, totalBoxes: totalBoxes, letterBank: letterBank, letterList: letterList)
         
         
         //run timers
@@ -166,14 +175,30 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         // add the falling box word to the white word box
                         self.boxManager.addWordToBox(wordBox: wordBox, fallingBox: fallingBox)
                         fallingBox.removeFromParent()
-                        if let index = fallingBoxManager.wordList.firstIndex(of: wordBox.name!) {
-                            fallingBoxManager.wordList.remove(at: index)
+                        if let index = fallingBoxManager.letterList.firstIndex(of: wordBox.name!) {
+                            fallingBoxManager.letterList.remove(at: index)
+                            fallingBoxManager.letterBank.removeAll{$0 == wordBox.name}
+                            print("YO YO " + wordBox.name!)
+
                         }
                         wordBox.name = nil
+                        if Settings.sharedInstance.soundEnabled {
+                            run(rightSound)
+                        }
+                        
+                        if fallingBoxManager.letterList.count == 0 {
+                            stopEverything = true
+                        }
+
                     } else{
                         // blow up box effects on impact
                         fallingBoxManager.animateBoxImpact(parentNode: self, fallingBox: fallingBox)
                         
+                    
+                        if Settings.sharedInstance.soundEnabled {
+                            run(wrongSound)
+                        }
+
                         if score == 9 {
                             score += 1
                             stopEverything = true
@@ -225,7 +250,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     
     @objc func createWordStream() {
-        if fallingBoxManager.wordList.count == 0 {
+        if fallingBoxManager.letterList.count == 0 {
             stopEverything = true
         }
         if stopEverything == false {
@@ -234,16 +259,67 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
+    func saveDailyScore(_ score: Int, for date: String) {
+        var scores = Settings.sharedInstance.dailyScores
+
+        // Store today's score
+        scores[date] = score
+
+        // (Optionally) remove older than 30 entries
+        // Easiest is to rely on chronological sorting of keys:
+        let sortedDates = scores.keys.sorted()
+        if sortedDates.count > 30 {
+            let excess = sortedDates.count - 30
+            let datesToRemove = sortedDates.prefix(excess)
+            for d in datesToRemove {
+                scores.removeValue(forKey: d)
+            }
+        }
+
+        // Write back to UserDefaults
+        Settings.sharedInstance.dailyScores = scores
+    }
+
+    
     func endGame() {
+        
+        for child in children {
+            if currentWord!.letterList.contains(child.name ?? "") {
+                child.removeFromParent()
+            }
+        }
         
         let finalScore = 10-score
         
+        if finalScore > 0 {
+            answerLabel.text = answerWord
+            answerLabel.fontColor = .systemYellow
+            
+            if Settings.sharedInstance.soundEnabled {
+                run(completeSound)
+            }
+
+        }
+
         spout1.isHidden = true
         spout2.isHidden = true
         
         if Settings.sharedInstance.playedToday == false {
             
-            let userScore = UserScore(date: currentPhrase.date, wuhbaNumber: currentPhrase.wuhbaNumber, score: finalScore)
+            saveDailyScore(finalScore, for: currentWord.date)
+            
+            let newGKScore = GKScore(leaderboardIdentifier: "wuhba30dayscore")
+            newGKScore.value = Int64(Settings.sharedInstance.getLast30DayScore())
+            GKScore.report([newGKScore]) { (error) in
+                if error != nil {
+                    print(error!.localizedDescription)
+                } else {
+                    print("New Score of \(Settings.sharedInstance.getLast30DayScore()) submitted to your Leaderboard!")
+                }
+            }
+
+                        
+            let userScore = FirebaseScore(date: currentWord.date, wuhbaNumber: currentWord.wuhbaNumber, score: finalScore)
             saveScore(userScore)
             
             if Settings.sharedInstance.highScore < finalScore {
@@ -255,7 +331,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             Analytics.logEvent("game_completed", parameters: [
                 "final_score": finalScore,
                 "game_seconds": gameSeconds,
-                "wuhba_number": currentPhrase!.wuhbaNumber
+                "wuhba_number": currentWord!.wuhbaNumber
                 
             ])
         }
@@ -263,24 +339,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         gameComplete = true
         wordTimer?.invalidate()
         removeItemsTimer?.invalidate()
-        for child in children {
-            if currentPhrase!.wordList.contains(child.name ?? "") {
-                child.removeFromParent()
-            }
-        }
         
         boxParent.removeAllChildren()
         boxParent.color = .white
         boxParent.run(SKAction.move(to: self.anchorPoint, duration: 0.5))
         boxParent.removeFromParent()
-        let label = SKLabelNode(text: answerPhrase)
-        label.fontColor = .white
-        label.fontName = "AvenirNext-Bold"
-        label.fontSize = 36
-        label.position.y = 42
+        answerLabel.fontName = "AvenirNext-Bold"
+        answerLabel.fontSize = 36
+        answerLabel.position.y = 42
         let fadeAction = SKAction.fadeIn(withDuration: 0.4)
-        label.run(fadeAction)
-        addChild(label)
+        answerLabel.run(fadeAction)
+        addChild(answerLabel)
         finalScoreBoxes()
         
         shareLabel.isHidden = false
@@ -309,13 +378,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 print("Unrecognized node name or out of range: \(node.name ?? "nil")")
             }
         }
+        
         numberLabel.isHidden = false
         scoreLabel.isHidden = false
         exitButton.isHidden = false
         
     }
     
-    func saveScore(_ score: UserScore) {
+    func saveScore(_ score: FirebaseScore) {
         guard let uid = Auth.auth().currentUser?.uid else {
             print("User not signed in")
             return
@@ -344,7 +414,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     @objc func removeItems(){
         gameSeconds += 1
         for child in children{
-            if child.position.y < -self.size.height - 100{
+            if child.position.y < -self.size.height - 50{
                 child.removeFromParent()
             }
         }
@@ -376,12 +446,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if let nodeName = atPoint(location).name {
                 if nodeName == "shareButton"{
                     print("shareButton")
-                    gameDelegate?.shareScore(score: 10-score, wuhbaNumber: currentPhrase!.wuhbaNumber)
+                    gameDelegate?.shareScore(score: 10-score, wuhbaNumber: currentWord!.wuhbaNumber)
                 }
                 
                 if nodeName == "exitButton"{
                     print("exitButton")
                     backToMenuWithDelay()
+                }
+                if nodeName == "answerLabel"{
+                    answerLabel.text = answerWord
+                    answerLabel.fontColor = .systemYellow
                 }
                 
             }

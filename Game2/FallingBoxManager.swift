@@ -18,16 +18,14 @@ class FallingBoxManager {
     var totalBoxes: Int = 0
     let boxPositions: [CGFloat] = [-244.0,-122.0,0.0,122.0,244.0]
     let gameFrame:CGRect
-    var wordBank: [String]
-    var wordList: [String]  // Added wordList property
+    var letterBank: [String]
+    var letterList: [String]  // Added wordList property
     
-    
-    
-    init(gameFrame: CGRect, totalBoxes: Int,wordBank: [String],wordList: [String]) {
+    init(gameFrame: CGRect, totalBoxes: Int,letterBank: [String],letterList: [String]) {
         self.totalBoxes = totalBoxes
-        self.wordBank = wordBank  // Assign wordList
+        self.letterBank = letterBank  // Assign wordList
         self.gameFrame = gameFrame
-        self.wordList = wordList  // Assign wordList
+        self.letterList = letterList  // Assign wordList
         
         // Preload textures
         self.explosionTexture = SKTexture(imageNamed: "spark")
@@ -49,26 +47,34 @@ class FallingBoxManager {
         if let explosion = explosionEmitter?.copy() as? SKEmitterNode {
             explosion.position = fallingBox.position
             parentNode.addChild(explosion)
+            
+            let wait = SKAction.wait(forDuration: 1.0)
+            let remove = SKAction.removeFromParent()
+            explosion.run(SKAction.sequence([wait, remove]))
         }
         
         if let explosion2 = explosion2Emitter?.copy() as? SKEmitterNode {
             explosion2.position = fallingBox.position
             parentNode.addChild(explosion2)
+            
+            let wait = SKAction.wait(forDuration: 1.0)
+            let remove = SKAction.removeFromParent()
+            explosion2.run(SKAction.sequence([wait, remove]))
         }
     }
     
     
     func spawnFallingBox(parentNode: SKNode, size: CGSize) {
         
-        if wordBank.isEmpty {
+        if letterBank.isEmpty {
             // If it is, repopulate it with the original wordList.
-            wordBank = wordList
+            letterBank = letterList
         }
         
         let fallingBox = SKShapeNode(rectOf: size)
         
-        if let randomWord = wordBank.randomElement(),
-           let index = wordBank.firstIndex(of: randomWord) {
+        if let randomWord = letterBank.randomElement(),
+           let index = letterBank.firstIndex(of: randomWord) {
             parentNode.addChild(fallingBox)
             
             let label = SKLabelNode(text: randomWord)
@@ -84,7 +90,7 @@ class FallingBoxManager {
                 "word": randomWord,
                 "index": index,
             ]
-            wordBank.remove(at: index)
+            letterBank.remove(at: index)
         }
         
         fallingBox.position.x = CGFloat.random(in: -82.0...82.0)
