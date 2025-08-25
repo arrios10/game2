@@ -69,9 +69,9 @@ class BoxManager {
         
         // set parent box properties
         let totalWidth: CGFloat = CGFloat(totalBoxes) * boxWidth + CGFloat(totalBoxes - 1)
-        self.boxParent?.position = CGPoint(x: gameFrame.midX, y: gameFrame.minY + 250)
+        self.boxParent?.position = CGPoint(x: gameFrame.maxX + 110, y: gameFrame.minY + 250)
         boxParent!.size.width = totalWidth
         boxParent!.color = .white
-        
+
     }
 }

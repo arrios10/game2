@@ -42,10 +42,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var boxParent = SKSpriteNode()
     private var spout1 = SKShapeNode()
     private var spout2 = SKShapeNode()
+    private var spout1b = SKShapeNode()
+    private var spout2b = SKShapeNode()
     
     private var shareButton = SKSpriteNode()
     private var exitButton = SKSpriteNode()
     private var shareLabel = SKLabelNode()
+    
+
     
     var scoreSquares: [SKShapeNode] = []
     let boxPositions: [CGFloat] = [-244.0,-122.0,0.0,122.0,244.0]
@@ -64,6 +68,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // timers
     private weak var wordTimer: Timer?
     private weak var removeItemsTimer: Timer?
+    private var bounceAction: SKAction?
+    private var userHasMovedBoxes = false
     
     // word arrays
     var letterList: [String] = []
@@ -79,6 +85,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         scoreLabel = self.childNode(withName: "scoreLabel") as! SKLabelNode
         spout1 = self.childNode(withName: "spout1") as! SKShapeNode
         spout2 = self.childNode(withName: "spout2") as! SKShapeNode
+        spout1b = self.childNode(withName: "spout1b") as! SKShapeNode
+        spout2b = self.childNode(withName: "spout2b") as! SKShapeNode
         
         shareLabel = self.childNode(withName: "shareLabel") as! SKLabelNode
         shareButton = self.childNode(withName: "shareButton") as! SKSpriteNode
@@ -132,6 +140,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //run timers
         removeItemsTimer = Timer.scheduledTimer(timeInterval: TimeInterval(1.0), target: self, selector: #selector(GameScene.removeItems), userInfo: nil, repeats: true)
         wordTimer = Timer.scheduledTimer(timeInterval: TimeInterval(Helper().randomBetweenTwoNumbers(firstNumber: 1.3, secondNumber: 1.5)), target: self, selector: #selector(GameScene.createWordStream), userInfo: nil, repeats: true)
+        
+        // Start bounce effect
+        startBounceEffect()
+        
+
     }
     
     override public func willMove(from view: SKView) {
@@ -262,18 +275,34 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func saveDailyScore(_ score: Int, for date: String) {
         var scores = Settings.sharedInstance.dailyScores
 
-        // Store today's score
+        // store today's score
         scores[date] = score
 
-        // (Optionally) remove older than 30 entries
-        // Easiest is to rely on chronological sorting of keys:
-        let sortedDates = scores.keys.sorted()
-        if sortedDates.count > 30 {
-            let excess = sortedDates.count - 30
-            let datesToRemove = sortedDates.prefix(excess)
-            for d in datesToRemove {
-                scores.removeValue(forKey: d)
+        // Generate past 30 calendar days and ensure all have entries
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let calendar = Calendar.current
+        
+        for i in 0..<30 {
+            if let pastDate = calendar.date(byAdding: .day, value: -i, to: Date()) {
+                let dateString = dateFormatter.string(from: pastDate)
+                // Only add 0 if no score exists for this date
+                if scores[dateString] == nil {
+                    scores[dateString] = 0
+                }
             }
+        }
+        
+        // Remove entries older than 30 days
+        let thirtyDaysAgo = calendar.date(byAdding: .day, value: -30, to: Date())!
+        let cutoffDate = dateFormatter.string(from: thirtyDaysAgo)
+        
+        for score in scores {
+            print("score: \(score)")
+        }
+        
+        scores = scores.filter { dateString, _ in
+            return dateString >= cutoffDate
         }
 
         // Write back to UserDefaults
@@ -303,6 +332,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
         spout1.isHidden = true
         spout2.isHidden = true
+        spout1b.isHidden = true
+        spout2b.isHidden = true
         
         if Settings.sharedInstance.playedToday == false {
             
@@ -441,8 +472,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         for touch in touches {
             let location = touch.location(in: self)
             
-            
-            
             if let nodeName = atPoint(location).name {
                 if nodeName == "shareButton"{
                     print("shareButton")
@@ -458,13 +487,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     answerLabel.fontColor = .systemYellow
                 }
                 
+                
             }
             
-            if stopEverything == false && gameComplete == false {
-                let newAction = SKAction.moveTo(x: location.x, duration: 0.1)
-                moveBoxAction = newAction
-                boxParent.run(moveBoxAction)
-            }
+//            if stopEverything == false && gameComplete == false {
+//                let newAction = SKAction.moveTo(x: location.x, duration: 0.1)
+//                moveBoxAction = newAction
+//                boxParent.run(moveBoxAction)
+//            }
             
         }
         
@@ -474,7 +504,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         for touch in touches {
             let location = touch.location(in: self)
-            let newAction = SKAction.moveTo(x: location.x * 2, duration: 0.13)
+            
+            // Stop bounce effect when user starts manual movement
+            if !userHasMovedBoxes {
+                stopBounceEffect()
+                userHasMovedBoxes = true
+            }
+            
+            let newAction = SKAction.moveTo(x: location.x * 1.8, duration: 0.13)
             moveBoxAction = newAction
             boxParent.run(moveBoxAction)
         }
@@ -489,5 +526,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         for t in touches { self.touchUp(atPoint: t.location(in: self)) }
     }
     
+    // MARK: - Bounce Effect Methods
+    func startBounceEffect() {
+        guard !userHasMovedBoxes else { return }
+        
+        let bounceLeft = SKAction.moveTo(x: boxParent.position.x - 13, duration: 0.35)
+        let bounceRight = SKAction.moveTo(x: boxParent.position.x + 10, duration: 0.3)
+        let bounceBack = SKAction.moveTo(x: boxParent.position.x, duration: 0.3)
+        let bounceSequence = SKAction.sequence([bounceLeft, bounceRight, bounceBack])
+        bounceAction = SKAction.repeatForever(bounceSequence)
+        
+        boxParent.run(bounceAction!, withKey: "bounceAction")
+    }
+    
+    func stopBounceEffect() {
+        boxParent.removeAction(forKey: "bounceAction")
+        bounceAction = nil
+    }
+        
     
 }

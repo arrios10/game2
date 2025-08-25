@@ -10,6 +10,7 @@ import FirebaseAuth
 import FirebaseDatabase
 import FirebaseAnalytics
 import GameKit
+import UIKit
 
 private enum Constants {
     static let rotationDuration: TimeInterval = 0.42
@@ -48,6 +49,13 @@ class GameMenu: SKScene, GKGameCenterControllerDelegate {
     private var rotateAction: SKAction!
     private var repeatAction: SKAction!
     
+    // Instructions popup elements
+    private var instructionsOverlay = SKShapeNode()
+    private var instructionsBackground = SKShapeNode()
+    private var instructionsText = SKLabelNode()
+    private var closeButton = SKLabelNode()
+    private var isInstructionsVisible = false
+    
     var gcEnabled = Bool() {
         didSet {
             if gcEnabled == true {
@@ -74,12 +82,18 @@ class GameMenu: SKScene, GKGameCenterControllerDelegate {
         numberLabel.isHidden = true
         
         updateSoundIcon()
+        
+        // Setup instructions popup
+        setupInstructionsPopup()
 
         setupStartBox()
         score = Settings.sharedInstance.highScore
         totalScore = Settings.sharedInstance.getLast30DayScore()
         totalScoreLabel.text = String(totalScore)
         setupScoreBoxes()
+        
+ 
+        
         self.anchorPoint = CGPoint(x: 0.5, y: 0.5)
         
         signIn { success in
@@ -141,6 +155,12 @@ class GameMenu: SKScene, GKGameCenterControllerDelegate {
                 case "scoreFlag", "totalScoreLabel", "totalScore":
                     showLeaderBoard()
                     
+                case "howtoplay":
+                    showInstructionsPopup()
+                
+                case "closeInstructions":
+                    hideInstructionsPopup()
+        
                 default:
                     break
                 }
@@ -168,7 +188,10 @@ class GameMenu: SKScene, GKGameCenterControllerDelegate {
             Settings.sharedInstance.saveLastPlayedDate(currentDate) // update last played date
             // date has changed, fetch the new phrase
             prefetchDataForCurrentDate()
-        } 
+        }
+        
+        // Update checkbox visibility after date logic has run
+        updateCheckboxVisibility() 
     }
 
     deinit {
@@ -253,9 +276,6 @@ class GameMenu: SKScene, GKGameCenterControllerDelegate {
         }
         updateScoreBoxes()
         
-        if Settings.sharedInstance.playedToday == true{
-            self.checkBox.isHidden = false
-        }
     }
     
     func updateScoreBoxes(){
@@ -264,12 +284,19 @@ class GameMenu: SKScene, GKGameCenterControllerDelegate {
             let element = scoreSquares[i]
             element.alpha = 0
         }
+        
+        // Update checkbox when returning from game
+        updateCheckboxVisibility()
     }
     
     func resetScoreBoxes(){
         for square in scoreSquares{
             square.alpha = 1
         }
+    }
+    
+    func updateCheckboxVisibility() {
+        checkBox.isHidden = !Settings.sharedInstance.playedToday
     }
     
     func showSignInErrorAlert(){
@@ -331,5 +358,93 @@ class GameMenu: SKScene, GKGameCenterControllerDelegate {
         
         viewController?.present(gcVC, animated: true, completion: nil)
     }
+    
+    // MARK: - Instructions Popup Methods
+    func setupInstructionsPopup() {
+        // Semi-transparent overlay covering entire screen
+        instructionsOverlay = SKShapeNode(rect: self.frame)
+        instructionsOverlay.fillColor = UIColor.black.withAlphaComponent(0.55)
+        instructionsOverlay.zPosition = 1000
+        instructionsOverlay.isHidden = true
+        
+        // White rounded background for instructions
+        let popupWidth: CGFloat = self.frame.width * 0.8
+        let popupHeight: CGFloat = self.frame.height * 0.55
+    
+        instructionsBackground = SKShapeNode(rect: CGRect(x: -popupWidth/2, y: -popupHeight/2, width: popupWidth, height: popupHeight), cornerRadius: 10)
+        instructionsBackground.fillColor = .black
+        instructionsBackground.strokeColor = .black
+        instructionsBackground.position = CGPoint(x: self.frame.midX, y: self.frame.midY - 82)
+        
+        // Instructions text
+        let instructionText = """
+        HOW TO PLAY WUHBA
+        
+        • Every day is a new 5-letter word
+        • Letters fall from the top in random order
+        • Slide the white 5-box grid left and right
+        • Catch the correct letter in each box
+        • Each wrong catch lowers your score
+        • 10 wrong catches is game over
+        • Complete the word and share your score
+        
+        30 DAY SCORE
+        
+        • Past 30-day scores are totaled
+        • Score is 0 if you don’t play that day
+        • Scores ranked on leaderboard
+        
+        Good luck!
+        """
+        
+        instructionsText = SKLabelNode(text: instructionText)
+        instructionsText.fontName = "AvenirNext-Medium"
+        instructionsText.fontSize = 28
+        instructionsText.fontColor = .white
+        instructionsText.numberOfLines = 0
+        instructionsText.preferredMaxLayoutWidth = popupWidth - 30
+        instructionsText.verticalAlignmentMode = .center
+        instructionsText.horizontalAlignmentMode = .center
+        instructionsText.position = CGPoint(x: 0, y: -10)
+        
+        // Close button
+        closeButton = SKLabelNode(text: "✕")
+        closeButton.name = "closeInstructions"
+        closeButton.fontName = "AvenirNext-Bold"
+        closeButton.fontSize = 82
+        closeButton.fontColor = .systemYellow
+        closeButton.position = CGPoint(x: instructionsOverlay.position.x, y: -popupHeight/2 + 25)
+        
+        // Assemble popup
+        instructionsBackground.addChild(instructionsText)
+        instructionsBackground.addChild(closeButton)
+        instructionsOverlay.addChild(instructionsBackground)
+        
+        self.addChild(instructionsOverlay)
+    }
+    
+    func showInstructionsPopup() {
+        guard !isInstructionsVisible else { return }
+        isInstructionsVisible = true
+        instructionsOverlay.isHidden = false
+        
+        // Fade in animation
+        instructionsOverlay.alpha = 0
+        let fadeIn = SKAction.fadeIn(withDuration: 0.3)
+        instructionsOverlay.run(fadeIn)
+    }
+    
+    func hideInstructionsPopup() {
+        guard isInstructionsVisible else { return }
+        
+        let fadeOut = SKAction.fadeOut(withDuration: 0.3)
+        let hide = SKAction.run { [weak self] in
+            self?.instructionsOverlay.isHidden = true
+            self?.isInstructionsVisible = false
+        }
+        let sequence = SKAction.sequence([fadeOut, hide])
+        instructionsOverlay.run(sequence)
+    }
+
     
 }
