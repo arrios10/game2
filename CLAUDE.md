@@ -63,6 +63,7 @@ Game2/
 
 ### Recent Features
 
+- **Visual Feedback for Incorrect Matches**: Target boxes flash orange when falling words hit the wrong position, providing immediate feedback for mistakes
 - **Instructions Popup**: Interactive "How to Play" overlay accessible from both GameScene and GameMenu
 - **Automatic Box Bounce**: BoxParent bounces left/right until user takes manual control
 - **30-Day Scoring**: True trailing 30-day score including zeros for missed days

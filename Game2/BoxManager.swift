@@ -41,7 +41,7 @@ class BoxManager {
         let originalFillColor = wordBox.fillColor
         let originalAlpha = wordBox.alpha
         
-        wordBox.fillColor = .orange
+        wordBox.fillColor = .systemYellow
         wordBox.alpha = 0.8
         
         let wait = SKAction.wait(forDuration: 0.2)

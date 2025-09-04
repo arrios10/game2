@@ -11,6 +11,8 @@ import FirebaseDatabase
 import FirebaseAnalytics
 import GameKit
 import UIKit
+import AVFoundation
+import AVKit
 
 private enum Constants {
     static let rotationDuration: TimeInterval = 0.42
@@ -53,6 +55,8 @@ class GameMenu: SKScene, GKGameCenterControllerDelegate {
     private var instructionsOverlay = SKShapeNode()
     private var instructionsBackground = SKShapeNode()
     private var instructionsText = SKLabelNode()
+    //private var instructionsVideoNode: SKVideoNode?
+    //private var videoPlayer: AVPlayer?
     private var closeButton = SKLabelNode()
     private var isInstructionsVisible = false
     
@@ -195,6 +199,8 @@ class GameMenu: SKScene, GKGameCenterControllerDelegate {
     }
 
     deinit {
+        // Clean up video player and notification observer
+        //videoPlayer?.pause()
         NotificationCenter.default.removeObserver(self)
     }
     
@@ -360,6 +366,38 @@ class GameMenu: SKScene, GKGameCenterControllerDelegate {
     }
     
     // MARK: - Instructions Popup Methods
+//    private func setupInstructionsVideo(popupWidth: CGFloat, popupHeight: CGFloat) {
+//        // Look for gameplay video in bundle
+//        guard let videoPath = Bundle.main.path(forResource: "gameplay", ofType: "mp4") else {
+//            print("No gameplay.mp4 video found in bundle")
+//            return
+//        }
+//        
+//        let videoURL = URL(fileURLWithPath: videoPath)
+//        videoPlayer = AVPlayer(url: videoURL)
+//        
+//        // Create video node
+//        let videoWidth: CGFloat = popupWidth - 40
+//        let videoHeight: CGFloat = videoWidth
+//        let videoSize = CGSize(width: videoWidth, height: videoHeight)
+//        
+//        instructionsVideoNode = SKVideoNode(avPlayer: videoPlayer!)
+//        instructionsVideoNode!.size = videoSize
+//        instructionsVideoNode!.position = CGPoint(x: 0, y: popupHeight/2 - videoHeight/2 - 60)
+//        
+//        // Set video to loop
+//        NotificationCenter.default.addObserver(
+//            forName: .AVPlayerItemDidPlayToEndTime,
+//            object: videoPlayer!.currentItem,
+//            queue: .main
+//        ) { [weak self] _ in
+//            self?.videoPlayer?.seek(to: .zero)
+//            self?.videoPlayer?.play()
+//        }
+//        
+//        instructionsBackground.addChild(instructionsVideoNode!)
+//    }
+    
     func setupInstructionsPopup() {
         // Semi-transparent overlay covering entire screen
         instructionsOverlay = SKShapeNode(rect: self.frame)
@@ -367,24 +405,25 @@ class GameMenu: SKScene, GKGameCenterControllerDelegate {
         instructionsOverlay.zPosition = 1000
         instructionsOverlay.isHidden = true
         
-        // White rounded background for instructions
-        let popupWidth: CGFloat = self.frame.width * 0.8
-        let popupHeight: CGFloat = self.frame.height * 0.55
+        // White rounded background for instructions (larger to accommodate video)
+        let popupWidth: CGFloat = self.frame.width * 0.85
+        let popupHeight: CGFloat = self.frame.height * 0.63
     
         instructionsBackground = SKShapeNode(rect: CGRect(x: -popupWidth/2, y: -popupHeight/2, width: popupWidth, height: popupHeight), cornerRadius: 10)
         instructionsBackground.fillColor = .black
         instructionsBackground.strokeColor = .black
-        instructionsBackground.position = CGPoint(x: self.frame.midX, y: self.frame.midY - 82)
+        instructionsBackground.position = CGPoint(x: self.frame.midX, y: self.frame.midY - 90)
+        
+        // Setup video player if video exists
+        //setupInstructionsVideo(popupWidth: popupWidth, popupHeight: popupHeight)
         
         // Instructions text
         let instructionText = """
         HOW TO PLAY WUHBA
         
-        • Every day is a new 5-letter word
         • Letters fall from the top in random order
-        • Slide the white 5-box grid left and right
+        • Move 5-box grid left and right
         • Catch the correct letter in each box
-        • Each wrong catch lowers your score
         • 10 wrong catches is game over
         • Complete the word and share your score
         
@@ -413,7 +452,7 @@ class GameMenu: SKScene, GKGameCenterControllerDelegate {
         closeButton.fontName = "AvenirNext-Bold"
         closeButton.fontSize = 82
         closeButton.fontColor = .systemYellow
-        closeButton.position = CGPoint(x: instructionsOverlay.position.x, y: -popupHeight/2 + 25)
+        closeButton.position = CGPoint(x: instructionsOverlay.position.x, y: -popupHeight/2 + 20)
         
         // Assemble popup
         instructionsBackground.addChild(instructionsText)
@@ -428,6 +467,9 @@ class GameMenu: SKScene, GKGameCenterControllerDelegate {
         isInstructionsVisible = true
         instructionsOverlay.isHidden = false
         
+        // Start video playback if available
+        //videoPlayer?.play()
+        
         // Fade in animation
         instructionsOverlay.alpha = 0
         let fadeIn = SKAction.fadeIn(withDuration: 0.3)
@@ -436,6 +478,9 @@ class GameMenu: SKScene, GKGameCenterControllerDelegate {
     
     func hideInstructionsPopup() {
         guard isInstructionsVisible else { return }
+        
+        // Stop and pause video playback
+        //videoPlayer?.pause()
         
         let fadeOut = SKAction.fadeOut(withDuration: 0.3)
         let hide = SKAction.run { [weak self] in

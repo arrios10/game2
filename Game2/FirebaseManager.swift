@@ -36,6 +36,11 @@ class FirebaseManager {
                             word: word,
                             letterList: letterList ,
                             wuhbaNumber: wuhbaNumber
+                            
+                            //for testing
+                            //word: "HELLO",
+                            //letterList: ["H","E","L","L","O"] ,
+                            //wuhbaNumber: 1
                         )
                         break // Since we only expect one result, we can break after finding the first match
                     }
