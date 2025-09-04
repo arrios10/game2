@@ -61,8 +61,31 @@ Game2/
 - SKPhysicsWorld handles word falling and collision detection
 - Fixed positions at [-244.0, -122.0, 0.0, 122.0, 244.0] for final word placement
 
+### Recent Features
+
+- **Instructions Popup**: Interactive "How to Play" overlay accessible from both GameScene and GameMenu
+- **Automatic Box Bounce**: BoxParent bounces left/right until user takes manual control
+- **30-Day Scoring**: True trailing 30-day score including zeros for missed days
+- **Daily Checkbox**: Visual indicator shows if player has completed today's puzzle
+- **Enhanced Visual Elements**: Additional spout nodes (spout1b, spout2b) for improved effects
+
+### Game Mechanics
+
+- **Scoring**: 10 mistakes maximum, lower scores are better
+- **Daily Play**: One puzzle per day, tracked with `playedToday` flag
+- **30-Day Leaderboard**: Sums past 30 calendar days (including 0s for missed days)
+- **Touch Controls**: Drag to move box grid, tap buttons for actions
+- **Visual Feedback**: Sound effects, particle explosions, score animations
+
 ### Dependencies
 
 - Firebase iOS SDK (v10.0+): Analytics, Auth, Database, Crashlytics
 - GameKit for Game Center leaderboards
 - SpriteKit for 2D game physics and rendering
+
+### Important Implementation Details
+
+- Daily scoring fills gaps with zeros using `saveDailyScore()` in GameScene.swift:267
+- Checkbox visibility updates via `updateCheckboxVisibility()` in GameMenu.swift:278  
+- Instructions popup methods in both GameScene.swift:554+ and GameMenu.swift:342+
+- Box bounce effect controlled by `startBounceEffect()` and `stopBounceEffect()` in GameScene.swift:535+

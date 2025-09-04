@@ -191,7 +191,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         if let index = fallingBoxManager.letterList.firstIndex(of: wordBox.name!) {
                             fallingBoxManager.letterList.remove(at: index)
                             fallingBoxManager.letterBank.removeAll{$0 == wordBox.name}
-                            print("YO YO " + wordBox.name!)
 
                         }
                         wordBox.name = nil
@@ -207,6 +206,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         // blow up box effects on impact
                         fallingBoxManager.animateBoxImpact(parentNode: self, fallingBox: fallingBox)
                         
+                        // flash the incorrect box red
+                        boxManager.flashBoxRed(wordBox: wordBox)
                     
                         if Settings.sharedInstance.soundEnabled {
                             run(wrongSound)

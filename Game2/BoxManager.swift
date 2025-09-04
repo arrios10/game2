@@ -37,6 +37,24 @@ class BoxManager {
         wordBox.fillColor = UIColor.white
     }
     
+    func flashBoxRed(wordBox: SKShapeNode) {
+        let originalFillColor = wordBox.fillColor
+        let originalAlpha = wordBox.alpha
+        
+        wordBox.fillColor = .orange
+        wordBox.alpha = 0.8
+        
+        let wait = SKAction.wait(forDuration: 0.2)
+        let resetColors = SKAction.run {
+            //wordBox.strokeColor = originalStrokeColor
+            //wordBox.lineWidth = originalLineWidth
+            wordBox.fillColor = originalFillColor
+            wordBox.alpha = originalAlpha
+        }
+        let sequence = SKAction.sequence([wait, resetColors])
+        wordBox.run(sequence)
+    }
+    
     func setupBoxes() {
         // setup word box width
         let boxWidth: CGFloat = ((gameFrame.width * 0.8) + 10) / (CGFloat(totalBoxes))
