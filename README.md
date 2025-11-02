@@ -1,6 +1,6 @@
-# Wuhba for iOS
+# WordFolly for iOS
 
-Wuhba - Order a five letter word. 
+WordFolly - Order a five letter word. 
 
 ## Description
 
