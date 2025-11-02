@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23727" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23721"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -16,15 +16,19 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="wuhba-logo-small" translatesAutoresizingMaskIntoConstraints="NO" id="IdH-9l-rgL">
-                                <rect key="frame" x="79.666666666666686" y="293" width="234" height="70"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="wordfally-logo" translatesAutoresizingMaskIntoConstraints="NO" id="IdH-9l-rgL">
+                                <rect key="frame" x="46" y="396" width="301" height="60"/>
+                                <color key="backgroundColor" red="0.109803915" green="0.109803915" blue="0.1294117719" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="17" scale="small"/>
                             </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
-                        <color key="backgroundColor" red="0.082352943720000002" green="0.082352943720000002" blue="0.13333334029999999" alpha="1" colorSpace="deviceRGB"/>
+                        <color key="backgroundColor" red="0.109803915" green="0.109803915" blue="0.1294117719" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <constraints>
-                            <constraint firstItem="IdH-9l-rgL" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="20b-e5-0fu"/>
-                            <constraint firstItem="IdH-9l-rgL" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="234" id="QJz-mK-GX0"/>
+                            <constraint firstItem="IdH-9l-rgL" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="278" id="0n7-ew-Rfy"/>
+                            <constraint firstItem="IdH-9l-rgL" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="CB6-nw-V3y"/>
+                            <constraint firstItem="IdH-9l-rgL" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="TYT-xg-UBQ"/>
+                            <constraint firstItem="IdH-9l-rgL" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="46" id="soB-QV-Np0"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -34,6 +38,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="wuhba-logo-small" width="234" height="70"/>
+        <image name="wordfally-logo" width="700" height="141"/>
     </resources>
 </document>

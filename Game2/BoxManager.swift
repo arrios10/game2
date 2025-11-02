@@ -81,6 +81,15 @@ class BoxManager {
             box.physicsBody?.collisionBitMask = CollisionType.fallingBox.rawValue
             box.physicsBody?.contactTestBitMask = CollisionType.fallingBox.rawValue
             
+            // Add default label
+            let label = SKLabelNode(text: "?")
+            label.fontColor = .systemYellow
+            label.fontName = "AvenirNext-Bold"
+            label.fontSize = 30
+            label.position.y = -10
+            box.addChild(label)
+            
+            
             // set box name to current word
             box.name = letterList[i]
         }

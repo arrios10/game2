@@ -122,7 +122,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // wuhba number label
         numberLabel = self.childNode(withName: "wuhbaNumber") as! SKLabelNode
         numberLabel.isHidden = true
-        numberLabel.text = "Wuhba No. " + String(currentWord!.wuhbaNumber)
+        numberLabel.text = "WordFolly No. " + String(currentWord!.wuhbaNumber)
         
         // populate data from array
         letterList = currentWord!.letterList
@@ -186,6 +186,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     if wordBox.name == fallingBox.name {
                         
                         // add the falling box word to the white word box
+                        wordBox.removeAllChildren()
                         self.boxManager.addWordToBox(wordBox: wordBox, fallingBox: fallingBox)
                         fallingBox.removeFromParent()
                         if let index = fallingBoxManager.letterList.firstIndex(of: wordBox.name!) {
@@ -242,7 +243,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         wordBox.fillColor = UIColor.white
     }
     
-    
     func backToMenuWithDelay() {
         // Schedule the scene transition after a delay
         let delayAction = SKAction.wait(forDuration: 0.1)
@@ -273,7 +273,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
-    func saveDailyScore(_ score: Int, for date: String) {
+    func update30DayScore(_ score: Int, for date: String) {
         var scores = Settings.sharedInstance.dailyScores
 
         // store today's score
@@ -303,7 +303,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         
         scores = scores.filter { dateString, _ in
-            return dateString >= cutoffDate
+            return dateString > cutoffDate
         }
 
         // Write back to UserDefaults
@@ -338,7 +338,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         if Settings.sharedInstance.playedToday == false {
             
-            saveDailyScore(finalScore, for: currentWord.date)
+            update30DayScore(finalScore, for: currentWord.date)
             
             let newGKScore = GKScore(leaderboardIdentifier: "wuhba30dayscore")
             newGKScore.value = Int64(Settings.sharedInstance.getLast30DayScore())
@@ -413,8 +413,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         numberLabel.isHidden = false
         scoreLabel.isHidden = false
-        exitButton.isHidden = false
-        
+
+        // Delay exitButton appearance
+        let waitAction = SKAction.wait(forDuration: 1.3)
+        let showButton = SKAction.run { [weak self] in
+            self?.exitButton.isHidden = false
+        }
+        let sequence = SKAction.sequence([waitAction, showButton])
+        self.run(sequence)
+
     }
     
     func saveScore(_ score: FirebaseScore) {

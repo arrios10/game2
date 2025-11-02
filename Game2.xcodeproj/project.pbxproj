@@ -38,6 +38,7 @@
 		01F044DC2ABC9C4700472FDE /* FirebaseAppCheck in Frameworks */ = {isa = PBXBuildFile; productRef = 01F044DB2ABC9C4700472FDE /* FirebaseAppCheck */; };
 		01F7953A2AE4D4080053688E /* BoxManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F795392AE4D4080053688E /* BoxManager.swift */; };
 		01F7953C2AE5A0CA0053688E /* FallingBoxManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F7953B2AE5A0CA0053688E /* FallingBoxManager.swift */; };
+		0DE9681A2E8B88E3001AC983 /* sparkle.sks in Resources */ = {isa = PBXBuildFile; fileRef = 0DE968192E8B88E3001AC983 /* sparkle.sks */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -66,6 +67,7 @@
 		01E206C82D9336AE0060D46A /* Game2.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Game2.entitlements; sourceTree = "<group>"; };
 		01F795392AE4D4080053688E /* BoxManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoxManager.swift; sourceTree = "<group>"; };
 		01F7953B2AE5A0CA0053688E /* FallingBoxManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FallingBoxManager.swift; sourceTree = "<group>"; };
+		0DE968192E8B88E3001AC983 /* sparkle.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = sparkle.sks; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -126,6 +128,7 @@
 				01A30DDA2A68CF0500ADA84D /* Main.storyboard */,
 				01A30DDD2A68CF0700ADA84D /* Assets.xcassets */,
 				01A30DDF2A68CF0700ADA84D /* LaunchScreen.storyboard */,
+				0DE968192E8B88E3001AC983 /* sparkle.sks */,
 				018F379D2A6E245700027BD0 /* Explosion.sks */,
 				01E206C12D90578A0060D46A /* Pickup_coin32.wav */,
 				01E206C62D9256570060D46A /* Blip_select20.wav */,
@@ -216,6 +219,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0DE9681A2E8B88E3001AC983 /* sparkle.sks in Resources */,
 				01A30DDC2A68CF0500ADA84D /* Main.storyboard in Resources */,
 				01E206C22D90578A0060D46A /* Pickup_coin32.wav in Resources */,
 				01A30DD32A68CF0500ADA84D /* GameScene.sks in Resources */,
@@ -424,7 +428,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Game2/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Wuhba;
+				INFOPLIST_KEY_CFBundleDisplayName = WordFolly;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.word-games";
 				INFOPLIST_KEY_NSUserTrackingUsageDescription = "We use activity data to improve your experience and develop new features for the app. We collect data about your activity to provide personalized ads.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -439,7 +443,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.2;
+				MARKETING_VERSION = 2.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = relativistic.Wuhba;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -464,7 +468,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Game2/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Wuhba;
+				INFOPLIST_KEY_CFBundleDisplayName = WordFolly;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.word-games";
 				INFOPLIST_KEY_NSUserTrackingUsageDescription = "We use activity data to improve your experience and develop new features for the app. We collect data about your activity to provide personalized ads.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -479,7 +483,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.2;
+				MARKETING_VERSION = 2.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = relativistic.Wuhba;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

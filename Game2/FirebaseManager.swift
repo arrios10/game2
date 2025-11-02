@@ -34,11 +34,11 @@ class FirebaseManager {
                             metadata: metadata,
                             notes: notes,
                             word: word,
-                            letterList: letterList ,
+                            letterList: letterList,
                             wuhbaNumber: wuhbaNumber
                             
                             //for testing
-                            //word: "HELLO",
+                           // word: "HELLO",
                             //letterList: ["H","E","L","L","O"] ,
                             //wuhbaNumber: 1
                         )
