@@ -17,7 +17,7 @@ enum CollisionType: UInt32 {
 }
 
 protocol GameSceneDelegate: AnyObject {
-    func shareScore(score: Int?, wuhbaNumber: Int?, includeScore: Bool)
+    func shareScore(score: Int, wuhbaNumber: Int)
 }
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
@@ -58,8 +58,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var numberLabel = SKLabelNode()
     var scoreLabel = SKLabelNode()
     var answerLabel = SKLabelNode()
-    var follyFox: SKSpriteNode!
-
+    
     // sounds
     let rightSound = SKAction.playSoundFileNamed("Pickup_coin32.wav", waitForCompletion: false)
     let wrongSound = SKAction.playSoundFileNamed("Blip_select20.wav", waitForCompletion: false)
@@ -92,9 +91,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         shareLabel = self.childNode(withName: "shareLabel") as! SKLabelNode
         shareButton = self.childNode(withName: "shareButton") as! SKSpriteNode
         exitButton = self.childNode(withName: "exitButton") as! SKSpriteNode
-        follyFox = self.childNode(withName: "fox") as? SKSpriteNode
         
-        follyFox.isHidden = true
         shareLabel.isHidden = true
         exitButton.isHidden = true
         shareButton.isHidden = true
@@ -396,24 +393,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         shareLabel.isHidden = false
         shareButton.isHidden = false
-        follyFox.isHidden = false
-        scoreLabel.isHidden = false
-
-        // Animate follyFox bouncing if perfect score
-        if finalScore == 10 {
-            scoreLabel.text = "PERFECT SCORE"
-            let bounceUp = SKAction.moveBy(x: 0, y: 11, duration: 0.2)
-            bounceUp.timingMode = .easeOut
-            let bounceDown = SKAction.moveBy(x: 0, y: -11, duration: 0.3)
-            bounceDown.timingMode = .easeIn
-            let bounceSequence = SKAction.sequence([bounceUp, bounceDown])
-            let repeatBounce = SKAction.repeat(bounceSequence, count: 3)
-            follyFox.run(repeatBounce)
-
-        }
-
+        
         //backToMenuWithDelay()
-
+        
     }
     
     
@@ -437,11 +419,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         if Settings.sharedInstance.currentGameMode == .daily {
             numberLabel.isHidden = false
-
         }
+        scoreLabel.isHidden = false
 
         // Delay exitButton appearance
-        let waitAction = SKAction.wait(forDuration: 1.0)
+        let waitAction = SKAction.wait(forDuration: 1.3)
         let showButton = SKAction.run { [weak self] in
             self?.exitButton.isHidden = false
         }
@@ -509,7 +491,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if let nodeName = atPoint(location).name {
                 if nodeName == "shareButton"{
                     print("shareButton")
-                    gameDelegate?.shareScore(score: 10-score, wuhbaNumber: currentWord!.wuhbaNumber, includeScore: true)
+                    gameDelegate?.shareScore(score: 10-score, wuhbaNumber: currentWord!.wuhbaNumber)
                 }
                 
                 if nodeName == "exitButton"{

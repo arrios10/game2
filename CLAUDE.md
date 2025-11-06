@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Wuhba is an iOS word game where players arrange falling words into a five-word phrase. Built using Swift, SpriteKit for game physics, and Firebase for backend services.
+WordFolly is an iOS word game where players arrange falling letters into a five-letter word. Built using Swift, SpriteKit for game physics, and Firebase for backend services.
 
 ## Build and Development Commands
 
@@ -21,8 +21,8 @@ This is an Xcode project. Use Xcode to build and run:
 
 - **GameScene.swift**: Main game logic using SpriteKit physics engine
 - **GameMenu.swift**: Menu system with Game Center integration and leaderboards  
-- **BoxManager.swift**: Manages stationary word boxes (5 positions at bottom)
-- **FallingBoxManager.swift**: Handles falling word physics and collision detection
+- **BoxManager.swift**: Manages stationary letter boxes (5 positions at bottom)
+- **FallingBoxManager.swift**: Handles falling letter physics and collision detection
 - **GameData.swift**: Data model for daily word puzzles
 - **FirebaseManager.swift**: Backend integration for fetching daily puzzles
 - **FirebaseScore.swift**: Handles score submission to leaderboards
@@ -31,8 +31,8 @@ This is an Xcode project. Use Xcode to build and run:
 
 1. GameMenu loads daily puzzle from Firebase
 2. GameScene initializes with word data and physics world
-3. FallingBoxManager spawns falling words from letterList
-4. BoxManager handles collision detection and word placement in 5 fixed positions
+3. FallingBoxManager spawns falling letters from letterList
+4. BoxManager handles collision detection and letter placement in 5 fixed positions
 5. Score tracking and Game Center integration for leaderboards
 
 ### Firebase Integration
@@ -58,17 +58,20 @@ Game2/
 ### Physics System
 
 - CollisionType enum defines wordBox (1) and fallingBox (4) collision categories
-- SKPhysicsWorld handles word falling and collision detection
-- Fixed positions at [-244.0, -122.0, 0.0, 122.0, 244.0] for final word placement
+- SKPhysicsWorld handles letter falling and collision detection
+- Fixed positions at [-244.0, -122.0, 0.0, 122.0, 244.0] for final letter placement
 
 ### Recent Features
 
-- **Visual Feedback for Incorrect Matches**: Target boxes flash orange when falling words hit the wrong position, providing immediate feedback for mistakes
+- **30-Day Score History Popup**: Interactive popup displaying all 30 days of scores, accessible from main menu via totalScoreLabel tap
+- **Visual Feedback for Incorrect Matches**: Target boxes flash orange when falling letters hit the wrong position, providing immediate feedback for mistakes
 - **Instructions Popup**: Interactive "How to Play" overlay accessible from both GameScene and GameMenu
 - **Automatic Box Bounce**: BoxParent bounces left/right until user takes manual control
-- **30-Day Scoring**: True trailing 30-day score including zeros for missed days
+- **30-Day Scoring**: True trailing 30-day score including zeros for missed days, with fixed off-by-one error in date filtering
 - **Daily Checkbox**: Visual indicator shows if player has completed today's puzzle
-- **Enhanced Visual Elements**: Additional spout nodes (spout1b, spout2b) for improved effects
+- **Status Label**: Shows "READY" or "PLAYED" state on main menu
+- **Delayed Exit Button**: Exit button appears 1.3s after game ends for better UX
+- **Sparkle Particle Effect**: Start box shows particle effect when ready to play
 
 ### Game Mechanics
 
@@ -86,7 +89,11 @@ Game2/
 
 ### Important Implementation Details
 
-- Daily scoring fills gaps with zeros using `saveDailyScore()` in GameScene.swift:267
-- Checkbox visibility updates via `updateCheckboxVisibility()` in GameMenu.swift:278  
-- Instructions popup methods in both GameScene.swift:554+ and GameMenu.swift:342+
-- Box bounce effect controlled by `startBounceEffect()` and `stopBounceEffect()` in GameScene.swift:535+
+- Daily scoring fills gaps with zeros using `update30DayScore()` in GameScene.swift:276 (renamed from `saveDailyScore()`)
+- 30-day score filter uses `>` (not `>=`) to keep exactly 30 days in GameScene.swift:306
+- Checkbox visibility updates via `updateCheckboxVisibility()` in GameMenu.swift:339
+- Status label shows READY/PLAYED state in GameMenu.swift:343-346
+- Instructions popup methods in both GameScene and GameMenu
+- Score history popup methods: `setupScoresPopup()`, `showScoresPopup()`, `hideScoresPopup()`, `generateScoresText()` in GameMenu.swift:537+
+- Exit button delay in `finalScoreBoxes()` in GameScene.swift:418-423
+- Sparkle particle effect setup in `setupStartBoxParticles()` in GameMenu.swift:253+

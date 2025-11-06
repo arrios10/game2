@@ -8,6 +8,10 @@
 import Foundation
 import UIKit
 
+enum GameMode: String {
+    case daily
+    case random
+}
 
 class Helper : NSObject {
     
@@ -25,6 +29,7 @@ class Settings {
     private let playedTodayKey = "playedToday"
     private let lastPlayedDateKey = "lastPlayedDate"
     private let dailyScoresKey = "dailyScores"
+    private let gameModeKey = "gameMode"
     
     var soundEnabled: Bool {
         get {
@@ -57,7 +62,20 @@ class Settings {
         get { UserDefaults.standard.bool(forKey: playedTodayKey) }
         set { UserDefaults.standard.set(newValue, forKey: playedTodayKey) }
     }
-    
+
+    var currentGameMode: GameMode {
+        get {
+            if let modeString = UserDefaults.standard.string(forKey: gameModeKey),
+               let mode = GameMode(rawValue: modeString) {
+                return mode
+            }
+            return .daily // Default to daily mode
+        }
+        set {
+            UserDefaults.standard.set(newValue.rawValue, forKey: gameModeKey)
+        }
+    }
+
     //save the last played date
     func saveLastPlayedDate(_ date: String) {
         UserDefaults.standard.set(date, forKey: lastPlayedDateKey)

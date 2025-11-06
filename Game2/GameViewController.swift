@@ -52,12 +52,20 @@ class GameViewController: UIViewController {
 }
 
 extension GameViewController: GameSceneDelegate {
-    func shareScore(score: Int, wuhbaNumber: Int) {
-        let scoreEmojiString = emojiScoreString(forScore: score)
-        
-        let scoreMessage = "\(scoreEmojiString) - \(score)/10. Wuhba No. \(wuhbaNumber). @playWuhba"
+    func shareScore(score: Int? = nil, wuhbaNumber: Int? = nil, includeScore: Bool = true) {
+        let finalScore = score ?? Settings.sharedInstance.highScore
+        let currentNumber = wuhbaNumber ?? 0
+
+        let scoreMessage: String
+        if includeScore {
+            let scoreEmojiString = emojiScoreString(forScore: finalScore)
+            scoreMessage = "\(scoreEmojiString) - \(finalScore)/10. WordFolly No. \(currentNumber). https://apple.co/4oowFhA"
+        } else {
+            scoreMessage = "Can you solve WordFolly No. \(currentNumber)? https://apple.co/4oowFhA"
+        }
+
         let activityViewController = UIActivityViewController(activityItems: [scoreMessage], applicationActivities: nil)
-        
+
         DispatchQueue.main.async { [weak self] in
             self?.present(activityViewController, animated: true, completion: nil)
         }
